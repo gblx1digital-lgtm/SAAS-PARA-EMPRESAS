@@ -60,7 +60,7 @@ const google = http.createServer((req, res) => {
           nextPageToken: 'PAGE2'
         }));
       }
-      return res.end(JSON.stringify({ places: [place('P4', 'Pizzaria Fechada', { businessStatus: 'CLOSED_PERMANENTLY' }), place('P5', 'Pizzaria iFood', { websiteUri: 'https://www.ifood.com.br/delivery/x' })] }));
+      return res.end(JSON.stringify({ places: [place('P4', 'Pizzaria Fechada', { businessStatus: 'CLOSED_PERMANENTLY' }), place('P5', 'Pizzaria iFood', { websiteUri: 'https://www.ifood.com.br/delivery/x', rating: 4.2, reviews: [{ authorAttribution: { displayName: 'Rui' }, rating: 2, text: { text: 'Pizza chegou fria e demorou 2 horas.' } }, { authorAttribution: { displayName: 'Lia' }, rating: 4, text: { text: 'Gostosa, mas o atendimento no telefone foi ruim.' } }, { authorAttribution: { displayName: 'Bia' }, rating: 5, text: { text: 'Atendimento excelente!' } }] })] }));
     }
     if (req.url.startsWith('/places/P1?')) {
       calls.details++;
@@ -155,7 +155,13 @@ async function main() {
   assert.equal((await req('GET', '/api/leads?site=nenhum')).data.total, 1);
   assert.equal((await req('GET', '/api/leads?mobile=1')).data.total, 2);
   assert.equal((await req('GET', '/api/leads?segment=odontologia')).data.total, 0);
-  assert.equal((await req('GET', '/api/leads?state=SC&city=Joinville&minRating=4.5')).data.total, 3);
+  assert.equal((await req('GET', '/api/leads?state=SC&city=Joinville&minRating=4.5')).data.total, 2);
+  // Nota baixa + reclamações
+  r = await req('GET', '/api/leads?site=sem&maxRating=4.3&complaints=1&sort=nota_baixa');
+  assert.deepEqual(r.data.items.map(i => [i.name, i.complaintCount]), [['Pizzaria iFood', 2]]);
+  assert.equal((await req('GET', '/api/leads?complaints=1')).data.total, 1, 'elogio não conta como reclamação');
+  const ifood = (await req('GET', `/api/leads/${r.data.items[0].id}`)).data;
+  assert.deepEqual(ifood.reviews.map(x => x.complaint), [true, true, false]);
   assert.equal((await req('GET', '/api/leads?q=insta')).data.total, 1);
 
   // Ficha completa
@@ -206,6 +212,7 @@ async function main() {
   assert.ok(csv.includes('"Pizzaria Sem Site"'));
   assert.ok(csv.includes('https://wa.me/5547999990001'));
   assert.ok(csv.includes('Pizzas artesanais'));
+  assert.ok(csv.includes('2★ Rui: Pizza chegou fria'));
   assert.ok(csv.split('\r\n').length === 4, 'cabeçalho + 3 empresas');
 
   // Excluir

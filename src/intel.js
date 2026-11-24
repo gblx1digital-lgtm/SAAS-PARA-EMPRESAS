@@ -96,4 +96,23 @@ function score(lead) {
   return { score: s, level: s >= 70 ? 'alta' : s >= 45 ? 'media' : 'baixa', site, reasons };
 }
 
-module.exports = { classifySite, hasNoOwnSite, instagramOf, score, hostOf };
+// Palavras de reclamação (atendimento, demora, qualidade). Só contam em avaliações de até 4 estrelas,
+// para não pegar elogios como "atendimento excelente".
+const COMPLAINT_WORDS = new RegExp([
+  'mal atendid', 'mau atendimento', 'atendimento (ruim|péssimo|pessimo|horr[ií]vel|fraco|lento|demorado|deixa a desejar|precisa melhorar)',
+  'p[eé]ssimo', 'horr[ií]vel', 'ruim', 'grosseir', 'foi grosso', 'foi grossa', 'mal educad', 'mal-educad', 'falta de educa[cç]', 'descaso',
+  'demor', 'atras', 'esperei', 'espera', 'n[aã]o (atende|atendem|responde|respondem|retorna|retornam)', 'ningu[eé]m (atende|responde)',
+  'decepcion', 'nunca mais', 'n[aã]o recomendo', 'desrespeit', 'despreparad', 'fria', 'frio', 'veio errad', 'errad[oa]', 'sujo', 'suja',
+  'caro demais', 'muito caro', 'cobran[cç]a', 'cobraram', '\\bdor(es)?\\b', 'reclama'
+].join('|'), 'i');
+
+/** Avaliações com reclamação: nota até 3, ou nota até 4 com palavras de reclamação. */
+function complaints(lead) {
+  return (lead.reviews || []).filter(r => {
+    const n = Number(r.rating) || 0;
+    if (n && n <= 3) return true;
+    return n <= 4 && COMPLAINT_WORDS.test(r.text || '');
+  });
+}
+
+module.exports = { classifySite, hasNoOwnSite, instagramOf, score, hostOf, complaints };

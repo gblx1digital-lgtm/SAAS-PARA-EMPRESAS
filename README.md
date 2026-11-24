@@ -18,7 +18,8 @@ Nichos: **Odontologia** (dentista, clínica odontológica), **Pizzaria** e **Lan
   - horário de funcionamento;
   - serviços (delivery, retirada, comer no local, reservas...), formas de pagamento, estacionamento e acessibilidade.
 - **Prioridade** de 0 a 100 para cada empresa: sem site, celular, nota alta, muitas avaliações e fotos sobem a nota.
-- **Filtros** por nicho, estado, cidade, situação do site, nota, status, "só celular" e "só com fotos".
+- **Filtros** por nicho, estado, cidade, situação do site, nota (alta ou baixa), reclamações, status, "só celular" e "só com fotos".
+- **Atalho "Sem site + nota baixa + reclamações"**: mostra quem não tem site, tem nota até 4,3 e avaliações reclamando (atendimento, demora, comida fria...). As reclamações ficam destacadas em vermelho na ficha e vão para a planilha.
 - **Status e anotações** simples (Nova, Já contatei, Negociando, Virou cliente, Descartada).
 - **Exportar planilha** (CSV, abre no Excel e no Google Planilhas) com todas as informações.
 - **Atualizar dados do Google** de uma empresa quando quiser (nota, fotos e avaliações novas), sem perder suas anotações.

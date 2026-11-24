@@ -22,6 +22,11 @@
     <section class="panel active" id="tab-empresas">
       <div class="kpis" id="kpis"></div>
 
+      <div class="presets">
+        <button class="btn btn-primary btn-sm" id="preset-bad">⚠️ Sem site + nota baixa + reclamações</button>
+        <button class="btn btn-ghost btn-sm" id="preset-clear">Limpar filtros</button>
+      </div>
+
       <div class="filters">
         <input type="search" id="f-q" placeholder="Buscar nome, bairro, cidade ou telefone">
         <select id="f-segment"><option value="">Todos os nichos</option></select>
@@ -35,19 +40,23 @@
           <option value="proprio">Com site próprio</option>
           <option value="">Com e sem site</option>
         </select>
-        <select id="f-minRating">
+        <select id="f-rating">
           <option value="">Qualquer nota</option>
-          <option value="4">Nota 4,0+</option>
-          <option value="4.5">Nota 4,5+</option>
+          <option value="max:4.3">Nota baixa (até 4,3)</option>
+          <option value="max:4">Nota até 4,0</option>
+          <option value="min:4">Nota 4,0 ou mais</option>
+          <option value="min:4.5">Nota 4,5 ou mais</option>
         </select>
         <select id="f-status"><option value="">Todos os status</option></select>
         <select id="f-sort">
           <option value="prioridade">Ordenar: prioridade</option>
           <option value="nota">Ordenar: maior nota</option>
+          <option value="nota_baixa">Ordenar: menor nota</option>
           <option value="avaliacoes">Ordenar: mais avaliações</option>
           <option value="recentes">Ordenar: mais recentes</option>
           <option value="nome">Ordenar: nome</option>
         </select>
+        <label class="check"><input type="checkbox" id="f-complaints"> Com reclamações</label>
         <label class="check"><input type="checkbox" id="f-mobile"> Só celular</label>
         <label class="check"><input type="checkbox" id="f-photos"> Só com fotos</label>
         <a class="btn btn-ghost btn-sm" id="btn-csv" href="/api/leads.csv">Exportar planilha</a>

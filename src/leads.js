@@ -79,6 +79,7 @@ function filter(q = {}) {
   const text = norm(q.q).trim();
   const digits = String(q.q || '').replace(/\D/g, '');
   const minRating = Number(q.minRating) || 0;
+  const maxRating = Number(q.maxRating) || 0;
   return all().filter(l =>
     (!q.segment || l.segment === q.segment) &&
     (!q.status || l.status === q.status) &&
@@ -87,6 +88,8 @@ function filter(q = {}) {
     (!q.mobile || l.mobile) &&
     (!q.photos || (l.photos || []).length > 0) &&
     (!minRating || Number(l.rating) >= minRating) &&
+    (!maxRating || (Number(l.rating) > 0 && Number(l.rating) <= maxRating)) &&
+    (!q.complaints || intel.complaints(l).length > 0) &&
     (!q.site || siteMatches(l, q.site)) &&
     (!q.priority || intel.score(l).level === q.priority) &&
     (!text || norm(l.name).includes(text) || norm(l.bairro).includes(text) || norm(l.city).includes(text) ||
@@ -101,12 +104,13 @@ function summary(l, i) {
     bairro: l.bairro, city: l.city, uf: l.uf, address: l.shortAddress || l.address, website: l.website, mapsUrl: l.mapsUrl,
     rating: l.rating, ratingCount: l.ratingCount, priceLevel: l.priceLevel, status: l.status, notes: l.notes,
     photo: (l.photos || [])[0]?.name || '', photoCount: (l.photos || []).length, reviewCount: (l.reviews || []).length,
-    instagram: intel.instagramOf(l), intel: i
+    instagram: intel.instagramOf(l), complaintCount: intel.complaints(l).length, intel: i
   };
 }
 
 const SORTS = {
   prioridade: (a, b) => b.i.score - a.i.score || (b.l.ratingCount || 0) - (a.l.ratingCount || 0),
+  nota_baixa: (a, b) => (Number(a.l.rating) || 9) - (Number(b.l.rating) || 9) || (b.l.ratingCount || 0) - (a.l.ratingCount || 0),
   nota: (a, b) => (Number(b.l.rating) || 0) - (Number(a.l.rating) || 0) || (b.l.ratingCount || 0) - (a.l.ratingCount || 0),
   avaliacoes: (a, b) => (b.l.ratingCount || 0) - (a.l.ratingCount || 0),
   recentes: (a, b) => String(b.l.createdAt).localeCompare(String(a.l.createdAt)),
@@ -147,7 +151,9 @@ function stats() {
 function full(id) {
   const l = find(id);
   if (!l) return null;
-  return { ...l, phoneFormatted: formatPhone(l.phone), instagram: intel.instagramOf(l), intel: intel.score(l), stateName: STATE_NAMES[l.uf] || l.uf };
+  const bad = new Set(intel.complaints(l));
+  return { ...l, reviews: (l.reviews || []).map(r => ({ ...r, complaint: bad.has(r) })), complaintCount: bad.size,
+    phoneFormatted: formatPhone(l.phone), instagram: intel.instagramOf(l), intel: intel.score(l), stateName: STATE_NAMES[l.uf] || l.uf };
 }
 
 function update(id, changes) {
@@ -181,12 +187,13 @@ function toCsv(q = {}) {
   const yes = list => (list || []).filter(x => x.value).map(x => x.label).join(', ');
   const head = ['Prioridade', 'Pontos', 'Situação do site', 'Nome', 'Nicho', 'Categoria no Google', 'Telefone', 'Celular',
     'WhatsApp', 'Instagram', 'Site/link no Google', 'Endereço', 'Bairro', 'Cidade', 'UF', 'CEP', 'Latitude', 'Longitude',
-    'Nota Google', 'Avaliações', 'Faixa de preço', 'Horário', 'Descrição', 'Serviços', 'Pagamento', 'Fotos no Google',
+    'Nota Google', 'Avaliações', 'Reclamações', 'Faixa de preço', 'Horário', 'Descrição', 'Serviços', 'Pagamento', 'Fotos no Google',
     'Status', 'Anotações', 'Google Maps'];
   const rows = filter(q).map(l => ({ l, i: intel.score(l) })).sort(SORTS.prioridade).map(({ l, i }) => [
     LEVEL[i.level], i.score, i.site.label, l.name, BY_ID[l.segment]?.label || l.segment, l.category,
     formatPhone(l.phone), l.mobile ? 'sim' : 'não', l.mobile ? `https://wa.me/55${l.phone}` : '', intel.instagramOf(l),
     l.website, l.address, l.bairro, l.city, l.uf, l.cep, l.lat, l.lng, l.rating || '', l.ratingCount || '',
+    intel.complaints(l).map(r => `${r.rating}★ ${r.author}: ${r.text}`).join(' | '),
     l.priceLevel || (l.priceRange ? `R$ ${l.priceRange.start ?? ''}–${l.priceRange.end ?? ''}` : ''),
     (l.hours || []).join(' | '), l.summary, yes(l.services), yes(l.payment), (l.photos || []).length,
     STATUSES[l.status] || l.status, l.notes, l.mapsUrl

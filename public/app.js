@@ -40,13 +40,18 @@ document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () =>
 $('#btn-logout').addEventListener('click', async () => { await api('/api/logout', { method: 'POST' }); window.location.href = '/login'; });
 
 // ─── Empresas ─────────────────────────────────────────────────────────────────
-const FILTERS = ['q', 'segment', 'state', 'city', 'site', 'minRating', 'status', 'sort'];
+const FILTERS = ['q', 'segment', 'state', 'city', 'site', 'rating', 'status', 'sort'];
+const CHECKS = ['complaints', 'mobile', 'photos'];
 
 function currentQuery() {
   const p = new URLSearchParams();
-  for (const f of FILTERS) { const v = $(`#f-${f}`).value; if (v) p.set(f, v); }
-  if ($('#f-mobile').checked) p.set('mobile', '1');
-  if ($('#f-photos').checked) p.set('photos', '1');
+  for (const f of FILTERS) {
+    const v = $(`#f-${f}`).value;
+    if (!v) continue;
+    if (f === 'rating') { const [kind, n] = v.split(':'); p.set(kind === 'max' ? 'maxRating' : 'minRating', n); }
+    else p.set(f, v);
+  }
+  for (const c of CHECKS) if ($(`#f-${c}`).checked) p.set(c, '1');
   return p;
 }
 
@@ -85,6 +90,7 @@ function card(l) {
         <span class="tag seg-${esc(l.segment)}">${esc(segLabel(l.segment))}</span>
         <span class="tag site-${esc(site.kind)}">${esc(site.label)}</span>
         <span class="tag lvl-${esc(l.intel.level)}">Prioridade ${LEVEL[l.intel.level]}</span>
+        ${l.complaintCount ? `<span class="tag complaint">${l.complaintCount} reclamaç${l.complaintCount > 1 ? 'ões' : 'ão'}</span>` : ''}
         ${l.status !== 'novo' ? `<span class="tag">${esc(CONFIG.statuses[l.status] || l.status)}</span>` : ''}
       </div>
       <h3 class="emp-name">${esc(l.name)}</h3>
@@ -130,8 +136,19 @@ for (const f of FILTERS) {
   });
 }
 $('#f-state').addEventListener('change', () => { $('#f-city').value = ''; });
-$('#f-mobile').addEventListener('change', () => { PAGE = 1; loadLeads(); });
-$('#f-photos').addEventListener('change', () => { PAGE = 1; loadLeads(); });
+for (const c of CHECKS) $(`#f-${c}`).addEventListener('change', () => { PAGE = 1; loadLeads(); });
+
+// Atalho: sem site + nota baixa + reclamações (quem mais precisa melhorar a imagem)
+function setFilters(values) {
+  for (const f of FILTERS) $(`#f-${f}`).value = values[f] ?? (f === 'site' ? 'sem' : f === 'sort' ? 'prioridade' : '');
+  for (const c of CHECKS) $(`#f-${c}`).checked = Boolean(values[c]);
+  PAGE = 1;
+  loadLeads();
+}
+$('#preset-bad').addEventListener('click', () => setFilters({
+  site: 'sem', rating: 'max:4.3', complaints: true, sort: 'nota_baixa', segment: $('#f-segment').value, state: $('#f-state').value, city: $('#f-city').value
+}));
+$('#preset-clear').addEventListener('click', () => setFilters({}));
 $('#pager').addEventListener('click', (e) => {
   const b = e.target.closest('[data-page]');
   if (b) { PAGE = Number(b.dataset.page); loadLeads(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
@@ -200,10 +217,10 @@ function renderDetail(l) {
     : '<p class="muted">Horário não informado no Google.</p>';
 
   const reviews = l.reviews && l.reviews.length
-    ? l.reviews.map(r => `<blockquote class="review">
-        <div><strong>${esc(r.author)}</strong> <span class="rating">${r.rating ? '★'.repeat(Math.round(r.rating)) : ''}</span> <span class="muted small">${esc(r.when)}</span></div>
+    ? [...l.reviews].sort((a, b) => Number(b.complaint) - Number(a.complaint)).map(r => `<blockquote class="review${r.complaint ? ' complaint' : ''}">
+        <div><strong>${esc(r.author)}</strong> <span class="rating">${r.rating ? '★'.repeat(Math.round(r.rating)) : ''}</span> <span class="muted small">${esc(r.when)}</span>${r.complaint ? ' <span class="tag complaint">reclamação</span>' : ''}</div>
         <p>${esc(r.text) || '<span class="muted">(sem texto)</span>'}</p>
-      </blockquote>`).join('') + '<p class="muted small">O Google mostra no máximo 5 avaliações por empresa. Ótimas para usar como depoimentos no site.</p>'
+      </blockquote>`).join('') + '<p class="muted small">O Google mostra no máximo 5 avaliações por empresa (as mais relevantes), então pode haver outras reclamações no Google Maps. Use as boas como depoimentos no site e as reclamações como argumento na conversa.</p>'
     : '<p class="muted">Sem avaliações com texto.</p>';
 
   const notes = `<div class="row">
@@ -239,7 +256,7 @@ function renderDetail(l) {
       ${section('Estacionamento', yesNo(l.parking))}
     </div>
     ${section('Acessibilidade', yesNo(l.accessibility))}
-    ${section(`Avaliações (${(l.reviews || []).length})`, reviews)}
+    ${section(`Avaliações (${(l.reviews || []).length})${l.complaintCount ? ` · ${l.complaintCount} com reclamação` : ''}`, reviews)}
     ${section('Suas anotações', notes)}`;
 }
 
