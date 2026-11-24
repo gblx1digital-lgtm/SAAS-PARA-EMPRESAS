@@ -123,8 +123,8 @@ async function main() {
       assert.equal(await sec.locator('.av-nota').innerText(), '4,1');
       assert.match(await sec.innerText(), /71 avaliações/);
       const href = await sec.locator('a', { hasText: 'Ver avaliações no Google' }).getAttribute('href');
-      assert.ok(href.startsWith('https://www.google.com/maps/'));
-      assert.ok(decodeURIComponent(href).includes('Vamos Sorrir'));
+      if (C.clinica.googleMapsUrl) assert.equal(href, C.clinica.googleMapsUrl, 'perfil exato da clínica no Maps');
+      else { assert.ok(href.startsWith('https://www.google.com/maps/')); assert.ok(decodeURIComponent(href).includes('Vamos Sorrir')); }
       assert.equal(await sec.locator('.est-cheia').evaluate(e => parseFloat(e.style.width)), 82);
     });
 
@@ -135,6 +135,7 @@ async function main() {
       const rota = new URL(await sec.locator('a', { hasText: 'Como chegar' }).getAttribute('href'));
       assert.equal(rota.pathname, '/maps/dir/');
       assert.match(rota.searchParams.get('destination'), /Rua 9 de Março, 396.*Joinville/);
+      if (C.clinica.googlePlaceId) assert.equal(rota.searchParams.get('destination_place_id'), C.clinica.googlePlaceId);
     });
 
     await caso('Mapa carrega sozinho ao chegar perto da seção', async () => {
@@ -203,7 +204,8 @@ async function main() {
 
     await caso('Rodapé: endereço, telefone, horários, Maps, privacidade e espaço para o CRO', async () => {
       const r = await page.locator('.rodape').innerText();
-      for (const s of ['Rua 9 de Março, 396', 'CEP 89201-400', '(47) 98825-1098', 'Segunda a sexta', 'Ver no Google Maps', 'Política de privacidade', 'Todos os direitos reservados', 'CRO-SC']) assert.ok(r.includes(s), s);
+      const cro = C.clinica.croResponsavel ? `Responsável técnico: ${C.clinica.responsavelTecnico} — ${C.clinica.croResponsavel}` : 'CRO-SC [número]';
+      for (const s of ['Rua 9 de Março, 396', 'CEP 89201-400', '(47) 98825-1098', 'Segunda a sexta', 'Ver no Google Maps', 'Política de privacidade', 'Todos os direitos reservados', cro]) assert.ok(r.includes(s), s);
       assert.equal(await page.locator('.rodape a[href^="tel:"]').getAttribute('href'), 'tel:+5547988251098');
     });
 

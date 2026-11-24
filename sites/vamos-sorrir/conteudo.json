@@ -20,9 +20,10 @@
     "segmento": "Clínica odontológica",
     "razaoSocial": "",
     "cnpj": "",
-    "responsavelTecnico": "",
-    "croResponsavel": "",
-    "inscricaoClinicaCro": "",
+    "responsavelTecnico": "Dra. Vanessa Ribeiro de Moura",
+    "croResponsavel": "CRO/SC 22676",
+    "inscricaoClinicaCro": "EPAO 3618",
+    "_cro_fonte": "Responsável técnico, CRO e EPAO lidos na placa da fachada da clínica (foto do Google). Confirme com a clínica.",
     "_cro": "Obrigatório pelo Código de Ética Odontológica em toda divulgação: nome e número de inscrição no CRO do responsável técnico. Preencha antes de publicar (previa: false).",
     "telefone": "(47) 98825-1098",
     "whatsapp": "5547988251098",
@@ -38,7 +39,8 @@
       "latitude": -26.301716,
       "longitude": -48.844829
     },
-    "googleMapsUrl": "",
+    "googleMapsUrl": "https://maps.google.com/?cid=7486065441657917319",
+    "googlePlaceId": "ChIJQZaJH3yx3pQRhw9ZN9vY42c",
     "_googleMapsUrl": "Link exato do perfil da clínica no Google Maps (botão 'Compartilhar' no Maps). Vazio = usa uma busca pelo nome e endereço.",
     "nota": 4.1,
     "avaliacoes": 71,
@@ -63,7 +65,8 @@
     "titulo": "Seu sorriso merece cuidado especial.",
     "texto": "Na Vamos Sorrir, você encontra um ambiente acolhedor para cuidar da sua saúde bucal. Entre em contato com nossa equipe e conheça nossa clínica.",
     "foto": "fachada.jpg",
-    "fotoAlt": "Fachada da clínica Vamos Sorrir na Rua 9 de Março, Centro de Joinville"
+    "fotoAlt": "Fachada amarela da clínica Vamos Sorrir na Rua 9 de Março, Centro de Joinville",
+    "fotoPosicao": "center 42%"
   },
 
   "sobre": {
@@ -121,13 +124,14 @@
   "galeria": {
     "titulo": "Conheça nosso espaço",
     "fotos": [
-      { "arquivo": "fachada.jpg", "legenda": "Fachada", "alt": "Fachada da clínica Vamos Sorrir no Centro de Joinville" },
-      { "arquivo": "recepcao.jpg", "legenda": "Recepção", "alt": "Recepção da clínica Vamos Sorrir" },
-      { "arquivo": "consultorio-1.jpg", "legenda": "Consultório", "alt": "Consultório odontológico da Vamos Sorrir" },
-      { "arquivo": "corredor.jpg", "legenda": "Ambientes internos", "alt": "Corredor de acesso aos consultórios da Vamos Sorrir" },
-      { "arquivo": "consultorio-2.jpg", "legenda": "Consultório", "alt": "Cadeira odontológica em consultório da Vamos Sorrir" },
-      { "arquivo": "equipamentos.jpg", "legenda": "Equipamentos", "alt": "Equipamentos odontológicos da Vamos Sorrir" }
+      { "arquivo": "fachada.jpg", "legenda": "Fachada", "alt": "Fachada amarela da clínica Vamos Sorrir na Rua 9 de Março, Centro de Joinville" },
+      { "arquivo": "recepcao.jpg", "legenda": "Recepção", "alt": "Recepção da Vamos Sorrir com balcão de atendimento e sala de espera" },
+      { "arquivo": "consultorio-1.jpg", "legenda": "Consultório", "alt": "Consultório odontológico da Vamos Sorrir com cadeira e equipamentos" },
+      { "arquivo": "corredor.jpg", "legenda": "Acesso aos consultórios", "alt": "Corredor de acesso aos consultórios da Vamos Sorrir" },
+      { "arquivo": "entrada.jpg", "legenda": "Entrada", "alt": "Entrada da Vamos Sorrir vista da calçada, com a recepção ao fundo" },
+      { "arquivo": "consultorio-2.jpg", "legenda": "Consultório", "alt": "Cadeira odontológica e refletor em consultório da Vamos Sorrir" }
     ],
+    "_fotos_fonte": "Fotos do perfil da clínica no Google Maps (publicadas pela própria clínica; a da recepção por Marketing Joinville). Confirme a autorização antes de sair da prévia.",
     "_fotos": "Coloque as fotos na pasta 'fotos' com esses nomes. Use só fotos da própria clínica, com autorização. Foto que não existir aparece como espaço reservado."
   },
 

@@ -5,7 +5,7 @@ Coloque aqui as fotos REAIS da clínica, com autorização da clínica, usando e
   consultorio-1.jpg
   consultorio-2.jpg
   corredor.jpg
-  equipamentos.jpg
+  entrada.jpg
 
 Pode ser .jpg, .png ou .webp: o que vale é o nome. Tamanho ideal: 1600 px de largura ou mais.
 Depois rode "npm run build". O site otimiza as fotos sozinho (WebP em 3 tamanhos).

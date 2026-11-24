@@ -13,7 +13,7 @@ function helpers(c, assets) {
   const enderecoCompleto = `${enderecoLinha}, ${e.cep}`;
   const busca = `${cl.nome}, ${enderecoCompleto}`;
   const mapsUrl = cl.googleMapsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(busca)}`;
-  const rotaUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(busca)}`;
+  const rotaUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(busca)}${cl.googlePlaceId ? `&destination_place_id=${encodeURIComponent(cl.googlePlaceId)}` : ''}`;
   const embedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(busca)}&z=16&hl=pt-BR&output=embed`;
   const wa = (texto) => `https://wa.me/${cl.whatsapp}?text=${encodeURIComponent(texto)}`;
   const msg = c.whatsappMensagens;
@@ -27,12 +27,13 @@ function helpers(c, assets) {
   }
 
   /** <picture> com WebP em vários tamanhos, ou um espaço reservado elegante se a foto ainda não existe. */
-  function foto(arquivo, alt, { sizes = '100vw', cls = '', eager = false, legenda = '' } = {}) {
+  function foto(arquivo, alt, { sizes = '100vw', cls = '', eager = false, legenda = '', posicao = '' } = {}) {
     const a = arquivo && assets.images[arquivo];
     if (!a) {
       return `<div class="ph ${cls}" role="img" aria-label="${esc(`Espaço reservado para foto: ${legenda || alt}`)}">${icon('dente', 'ph-ico')}<span>${esc(legenda || 'Foto da clínica')}</span><small>foto real enviada pela clínica</small></div>`;
     }
-    return `<img class="${cls}" src="${a.src}" srcset="${a.srcset}" sizes="${sizes}" width="${a.width}" height="${a.height}" alt="${esc(alt)}" ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
+    const pos = /^[a-z0-9%. ]{1,30}$/i.test(posicao) ? ` style="object-position:${posicao}"` : '';
+    return `<img class="${cls}" src="${a.src}" srcset="${a.srcset}" sizes="${sizes}" width="${a.width}" height="${a.height}" alt="${esc(alt)}"${pos} ${eager ? 'fetchpriority="high"' : 'loading="lazy"'} decoding="async">`;
   }
 
   return { cl, e, enderecoLinha, enderecoCompleto, mapsUrl, rotaUrl, embedUrl, wa, msg, telLink, nota, waLink, foto };
@@ -91,8 +92,16 @@ function header(c, h, { home = true } = {}) {
 </header>`;
 }
 
+/** "Vamos Sorrir": a última palavra em vermelho, como na fachada da clínica. */
+function logoNome(nome) {
+  const partes = String(nome).trim().split(/\s+/);
+  if (partes.length < 2) return esc(nome);
+  const ultima = partes.pop();
+  return `${esc(partes.join(' '))} <span class="logo-destaque">${esc(ultima)}</span>`;
+}
+
 function logo(nome) {
-  return `<svg class="logo-marca" viewBox="0 0 40 40" aria-hidden="true" focusable="false"><rect width="40" height="40" rx="10" fill="#F5C518"/><path d="M11 17.5c0-1.2.9-2 2-2s2 .8 2 2M25 17.5c0-1.2.9-2 2-2s2 .8 2 2" fill="none" stroke="#2A2317" stroke-width="2.2" stroke-linecap="round"/><path d="M11.5 23c2.2 3.4 5.1 5 8.5 5s6.3-1.6 8.5-5" fill="none" stroke="#2A2317" stroke-width="2.6" stroke-linecap="round"/></svg><span class="logo-txt"><strong>${esc(nome)}</strong><small>Odontologia</small></span>`;
+  return `<svg class="logo-marca" viewBox="0 0 40 40" aria-hidden="true" focusable="false"><rect width="40" height="40" rx="10" fill="#F5C518"/><path d="M11 17.5c0-1.2.9-2 2-2s2 .8 2 2M25 17.5c0-1.2.9-2 2-2s2 .8 2 2" fill="none" stroke="#2A2317" stroke-width="2.2" stroke-linecap="round"/><path d="M11.5 23c2.2 3.4 5.1 5 8.5 5s6.3-1.6 8.5-5" fill="none" stroke="#2A2317" stroke-width="2.6" stroke-linecap="round"/></svg><span class="logo-txt"><strong>${logoNome(nome)}</strong><small>Odontologia</small></span>`;
 }
 
 function estrelas(nota) {
@@ -142,7 +151,7 @@ function footer(c, h, { home = true } = {}) {
     </div>
   </div>
   <div class="wrap rodape-legal"><div>
-    <p class="${cl.responsavelTecnico ? '' : 'pendente'}">${rt}${cl.inscricaoClinicaCro ? ` · Clínica inscrita no CRO-SC sob nº ${esc(cl.inscricaoClinicaCro)}` : ''}</p>
+    <p class="${cl.responsavelTecnico ? '' : 'pendente'}">${rt}${cl.inscricaoClinicaCro ? ` · Inscrição da clínica no CRO: ${esc(cl.inscricaoClinicaCro)}` : ''}</p>
     <p>© ${ano} ${esc(cl.razaoSocial || cl.nome)}${cl.cnpj ? ` · CNPJ ${esc(cl.cnpj)}` : ''}. Todos os direitos reservados. · <a href="/politica-de-privacidade/">Política de privacidade</a></p>
   </div></div>
 </footer>
@@ -216,7 +225,7 @@ function home(c, assets) {
       </ul>
     </div>
     <div class="hero-foto">
-      ${h.foto(c.hero.foto, c.hero.fotoAlt, { sizes: '(min-width: 960px) 520px, 100vw', eager: true, legenda: 'Fachada da clínica' })}
+      ${h.foto(c.hero.foto, c.hero.fotoAlt, { sizes: '(min-width: 960px) 520px, 100vw', eager: true, legenda: 'Fachada da clínica', posicao: c.hero.fotoPosicao })}
       <a class="hero-selo" href="#localizacao">${icon('relogio')}<span><strong>Seg. a sex. 8h–19h</strong><small>Sábado 8h–14h</small></span></a>
     </div>
   </div>
@@ -309,7 +318,7 @@ function home(c, assets) {
         const a = assets.images[f.arquivo];
         if (!a) return `<li class="gal-item">${h.foto(null, f.alt, { legenda: f.legenda })}</li>`;
         return `<li class="gal-item"><button class="gal-btn" data-full="${a.big}" data-legenda="${esc(f.legenda)}" data-alt="${esc(f.alt)}" aria-label="${esc(`Ampliar foto: ${f.legenda}`)}">
-          ${h.foto(f.arquivo, f.alt, { sizes: '(min-width: 960px) 380px, (min-width: 600px) 50vw, 100vw' })}
+          ${h.foto(f.arquivo, f.alt, { sizes: '(min-width: 960px) 380px, (min-width: 640px) 33vw, 50vw', posicao: f.posicao })}
           <span class="gal-leg">${esc(f.legenda)} ${icon('ampliar')}</span></button></li>`;
       }).join('')}
     </ul>
