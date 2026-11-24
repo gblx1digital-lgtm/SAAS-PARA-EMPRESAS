@@ -19,7 +19,7 @@ const PLATFORMS = {
   'cardapioweb.com': 'Cardápio Web', 'aiqfome.com': 'aiqfome', 'deliverydireto.com.br': 'Delivery Direto',
   'menudino.com': 'MenuDino', 'saipos.com': 'Saipos', 'olaclick.com': 'OlaClick', 'instadelivery.com.br': 'InstaDelivery',
   'neemo.com.br': 'Neemo', 'yooga.app': 'Yooga', 'cardapio.menu': 'Cardápio Menu', 'menuvem.com.br': 'Menuvem',
-  'pedirdelivery.com.br': 'Pedir Delivery', 'deliverymuch.com.br': 'Delivery Much', 'rappi.com.br': 'Rappi',
+  'pedirdelivery.com.br': 'Pedir Delivery', 'pedir.delivery': 'Pedir Delivery', 'deliverymuch.com.br': 'Delivery Much', 'rappi.com.br': 'Rappi',
   '99app.com': '99Food', 'ubereats.com': 'Uber Eats', 'consumer.com.br': 'Consumer', 'kyte.site': 'Kyte',
   'doctoralia.com.br': 'Doctoralia', 'doctoralia.com': 'Doctoralia', 'boaconsulta.com': 'BoaConsulta',
   'simplesdental.com': 'Simples Dental', 'simples.dental': 'Simples Dental', 'calendly.com': 'Calendly'
