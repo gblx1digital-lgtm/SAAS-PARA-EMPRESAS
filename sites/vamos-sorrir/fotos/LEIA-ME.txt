@@ -1,0 +1,12 @@
+Coloque aqui as fotos REAIS da clínica, com autorização da clínica, usando estes nomes:
+
+  fachada.jpg        (também usada no topo do site e na imagem de compartilhamento)
+  recepcao.jpg
+  consultorio-1.jpg
+  consultorio-2.jpg
+  corredor.jpg
+  equipamentos.jpg
+
+Pode ser .jpg, .png ou .webp: o que vale é o nome. Tamanho ideal: 1600 px de largura ou mais.
+Depois rode "npm run build". O site otimiza as fotos sozinho (WebP em 3 tamanhos).
+Para trocar nomes, legendas ou a ordem, edite "galeria" no conteudo.json.

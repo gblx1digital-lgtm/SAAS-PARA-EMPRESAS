@@ -1,0 +1,16 @@
+{
+  "name": "site-vamos-sorrir",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Site da Vamos Sorrir — clínica odontológica no Centro de Joinville (SC).",
+  "scripts": {
+    "build": "node build.js",
+    "start": "node build.js && node serve.js",
+    "test": "node test.js"
+  },
+  "engines": { "node": ">=20.0.0" },
+  "dependencies": {
+    "@fontsource/plus-jakarta-sans": "^5.1.0",
+    "sharp": "^0.33.5"
+  }
+}

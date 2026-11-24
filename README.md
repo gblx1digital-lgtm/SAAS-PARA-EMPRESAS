@@ -96,3 +96,7 @@ O teste usa um Google **simulado**: não precisa de internet e não gasta cota.
 | `SESSION_SECRET` | Segredo das sessões. Sem ele, o segredo é derivado da senha, e trocar a senha desconecta todo mundo. |
 
 População por município: IBGE, Censo 2022 (dados do pacote `municipios-br`, licença CC0 — domínio público; veja `src/data/LICENSE-municipios-br.txt`).
+
+## Sites dos clientes
+
+Cada site fica em `sites/<cliente>/`, com o próprio README. Primeiro: [`sites/vamos-sorrir`](sites/vamos-sorrir/README.md).

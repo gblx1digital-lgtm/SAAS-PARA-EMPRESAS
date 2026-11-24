@@ -1,0 +1,162 @@
+{
+  "_leia_me": "Todo o texto do site está aqui. Edite, rode 'npm run build' e publique a pasta dist. Campos que começam com _ são só explicações.",
+
+  "previa": true,
+  "_previa": "true = prévia para apresentar à clínica: mostra uma faixa de aviso e NÃO aparece no Google. Mude para false quando a clínica aprovar o site.",
+
+  "site": {
+    "url": "https://www.vamossorrirjoinville.com.br",
+    "_url": "Domínio definitivo do site (sem barra no final). Usado no sitemap, no Google e no compartilhamento.",
+    "titulo": "Vamos Sorrir | Clínica Odontológica no Centro de Joinville - SC",
+    "descricao": "Clínica odontológica no Centro de Joinville, na Rua 9 de Março. Atendimento de segunda a sábado. Agende sua avaliação pelo WhatsApp.",
+    "googleAnalyticsId": "",
+    "_googleAnalyticsId": "ID do Google Analytics 4 (ex.: G-XXXXXXX). Vazio = sem Analytics. Só carrega depois que o visitante aceita os cookies.",
+    "googleSearchConsole": "",
+    "_googleSearchConsole": "Código da meta tag de verificação do Search Console (só o valor do content)."
+  },
+
+  "clinica": {
+    "nome": "Vamos Sorrir",
+    "segmento": "Clínica odontológica",
+    "razaoSocial": "",
+    "cnpj": "",
+    "responsavelTecnico": "",
+    "croResponsavel": "",
+    "inscricaoClinicaCro": "",
+    "_cro": "Obrigatório pelo Código de Ética Odontológica em toda divulgação: nome e número de inscrição no CRO do responsável técnico. Preencha antes de publicar (previa: false).",
+    "telefone": "(47) 98825-1098",
+    "whatsapp": "5547988251098",
+    "email": "",
+    "instagram": "",
+    "endereco": {
+      "rua": "Rua 9 de Março",
+      "numero": "396",
+      "bairro": "Centro",
+      "cidade": "Joinville",
+      "uf": "SC",
+      "cep": "89201-400",
+      "latitude": -26.301716,
+      "longitude": -48.844829
+    },
+    "googleMapsUrl": "",
+    "_googleMapsUrl": "Link exato do perfil da clínica no Google Maps (botão 'Compartilhar' no Maps). Vazio = usa uma busca pelo nome e endereço.",
+    "nota": 4.1,
+    "avaliacoes": 71,
+    "_nota": "Nota e número de avaliações no Google. Atualize de tempos em tempos.",
+    "horarios": [
+      { "dias": "Segunda a sexta", "abre": "08:00", "fecha": "19:00", "schema": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] },
+      { "dias": "Sábado", "abre": "08:00", "fecha": "14:00", "schema": ["Saturday"] },
+      { "dias": "Domingo", "fechado": true }
+    ]
+  },
+
+  "whatsappMensagens": {
+    "geral": "Olá! Conheci a Vamos Sorrir pelo site e gostaria de obter informações sobre uma consulta.",
+    "avaliacao": "Olá! Vi o site da Vamos Sorrir e gostaria de agendar uma avaliação.",
+    "tratamento": "Olá! Vi no site da Vamos Sorrir e gostaria de saber se vocês realizam {tratamento} e como funciona a avaliação.",
+    "localizacao": "Olá! Vi o endereço da Vamos Sorrir no site e gostaria de agendar um horário.",
+    "duvida": "Olá! Estava lendo as perguntas frequentes no site da Vamos Sorrir e tenho uma dúvida.",
+    "galeria": "Olá! Vi as fotos da clínica no site e gostaria de agendar uma visita para avaliação."
+  },
+
+  "hero": {
+    "titulo": "Seu sorriso merece cuidado especial.",
+    "texto": "Na Vamos Sorrir, você encontra um ambiente acolhedor para cuidar da sua saúde bucal. Entre em contato com nossa equipe e conheça nossa clínica.",
+    "foto": "fachada.jpg",
+    "fotoAlt": "Fachada da clínica Vamos Sorrir na Rua 9 de Março, Centro de Joinville"
+  },
+
+  "sobre": {
+    "titulo": "Uma clínica no coração de Joinville",
+    "paragrafos": [
+      "A Vamos Sorrir fica na Rua 9 de Março, no Centro de Joinville, em um endereço fácil de chegar para quem trabalha ou mora na região central.",
+      "Atendemos de segunda a sexta até as 19h e também aos sábados pela manhã. O primeiro passo é simples: fale com a nossa equipe pelo WhatsApp e agende sua avaliação."
+    ],
+    "_paragrafos": "Espaço para a história da clínica, há quanto tempo atende, o que a torna diferente. Use só informações reais.",
+    "fotos": ["recepcao.jpg", "consultorio-1.jpg"],
+    "destaques": [],
+    "_destaques": "Diferenciais confirmados pela clínica, um por item (ex.: 'Atendimento aos sábados'). Vazio = não mostra.",
+    "equipe": [],
+    "_equipe": "Dentistas da clínica: { \"nome\": \"Dra. Nome\", \"cro\": \"CRO-SC 00000\", \"especialidade\": \"...\", \"foto\": \"equipe-nome.jpg\" }. Vazio = não mostra a parte da equipe."
+  },
+
+  "tratamentos": {
+    "titulo": "Tratamentos",
+    "introducao": "Conheça alguns dos tratamentos odontológicos mais procurados e fale com a nossa equipe para saber quais são realizados na clínica e qual é o mais indicado para o seu caso.",
+    "introducaoConfirmada": "Conheça os tratamentos realizados na Vamos Sorrir. Cada caso é avaliado individualmente pela nossa equipe.",
+    "_confirmado": "Em cada tratamento: confirmado true = a clínica confirmou que realiza (o botão vira 'Agendar avaliação'). false = o botão pergunta se a clínica realiza. Apague os que a clínica não faz.",
+    "lista": [
+      { "nome": "Avaliação odontológica", "icone": "avaliacao", "foto": "", "confirmado": false,
+        "descricao": "O ponto de partida de qualquer tratamento: o dentista examina dentes e gengivas, conversa sobre suas queixas e indica os próximos passos." },
+      { "nome": "Limpeza e prevenção", "icone": "limpeza", "foto": "", "confirmado": false,
+        "descricao": "Remoção de placa e tártaro e orientação de higiene para manter dentes e gengivas saudáveis entre uma consulta e outra." },
+      { "nome": "Restaurações", "icone": "restauracao", "foto": "", "confirmado": false,
+        "descricao": "Recuperação de dentes com cárie, desgastes ou pequenas fraturas, devolvendo forma e função ao dente." },
+      { "nome": "Tratamento de canal", "icone": "canal", "foto": "", "confirmado": false,
+        "descricao": "Indicado quando a polpa do dente está inflamada ou infeccionada, para tratar a dor e preservar o dente natural." },
+      { "nome": "Clareamento dental", "icone": "clareamento", "foto": "", "confirmado": false,
+        "descricao": "Procedimento para deixar os dentes mais claros, sempre após avaliação para verificar se é indicado para você." },
+      { "nome": "Ortodontia", "icone": "ortodontia", "foto": "", "confirmado": false,
+        "descricao": "Correção da posição dos dentes e da mordida com aparelhos, planejada de acordo com cada paciente." },
+      { "nome": "Implantes dentários", "icone": "implante", "foto": "", "confirmado": false,
+        "descricao": "Reposição de dentes perdidos com um pino que funciona como raiz artificial, sobre o qual é fixada a coroa." },
+      { "nome": "Próteses dentárias", "icone": "protese", "foto": "", "confirmado": false,
+        "descricao": "Reposição de um ou mais dentes com próteses fixas ou removíveis, para recuperar a mastigação e a estética do sorriso." }
+    ]
+  },
+
+  "porQue": {
+    "titulo": "Por que conhecer a Vamos Sorrir",
+    "itens": [
+      { "icone": "local", "titulo": "No Centro de Joinville", "texto": "Rua 9 de Março, 396, na região central da cidade." },
+      { "icone": "pessoa", "titulo": "Atendimento presencial", "texto": "Você conhece a clínica, conversa com a equipe e tira suas dúvidas pessoalmente." },
+      { "icone": "whatsapp", "titulo": "Contato direto pelo WhatsApp", "texto": "Fale com a equipe sem ligação e sem espera para agendar ou tirar dúvidas." },
+      { "icone": "relogio", "titulo": "Segunda a sábado", "texto": "Das 8h às 19h durante a semana e das 8h às 14h aos sábados." }
+    ]
+  },
+
+  "depoimentos": [],
+  "_depoimentos": "Depoimentos reais, com autorização do paciente: { \"texto\": \"...\", \"autor\": \"Nome S.\" }. Vazio = mostra só a nota do Google.",
+
+  "galeria": {
+    "titulo": "Conheça nosso espaço",
+    "fotos": [
+      { "arquivo": "fachada.jpg", "legenda": "Fachada", "alt": "Fachada da clínica Vamos Sorrir no Centro de Joinville" },
+      { "arquivo": "recepcao.jpg", "legenda": "Recepção", "alt": "Recepção da clínica Vamos Sorrir" },
+      { "arquivo": "consultorio-1.jpg", "legenda": "Consultório", "alt": "Consultório odontológico da Vamos Sorrir" },
+      { "arquivo": "corredor.jpg", "legenda": "Ambientes internos", "alt": "Corredor de acesso aos consultórios da Vamos Sorrir" },
+      { "arquivo": "consultorio-2.jpg", "legenda": "Consultório", "alt": "Cadeira odontológica em consultório da Vamos Sorrir" },
+      { "arquivo": "equipamentos.jpg", "legenda": "Equipamentos", "alt": "Equipamentos odontológicos da Vamos Sorrir" }
+    ],
+    "_fotos": "Coloque as fotos na pasta 'fotos' com esses nomes. Use só fotos da própria clínica, com autorização. Foto que não existir aparece como espaço reservado."
+  },
+
+  "faq": [
+    { "pergunta": "Como faço para agendar uma consulta?",
+      "resposta": "Pelo WhatsApp (47) 98825-1098, ou preenchendo o formulário de agendamento aqui no site. Você informa seu nome, o motivo e o melhor dia ou período, e a nossa equipe confirma o horário com você." },
+    { "pergunta": "Onde fica a clínica?",
+      "resposta": "Na Rua 9 de Março, 396, no Centro de Joinville (SC), CEP 89201-400." },
+    { "pergunta": "Qual é o horário de funcionamento?",
+      "resposta": "De segunda a sexta, das 8h às 19h, e aos sábados, das 8h às 14h. Aos domingos a clínica não abre." },
+    { "pergunta": "Como posso saber quais tratamentos a clínica realiza?",
+      "resposta": "Fale com a nossa equipe pelo WhatsApp e conte o que você precisa. Também é possível tocar em \"Consultar\" em qualquer tratamento da seção Tratamentos para enviar a pergunta já pronta." },
+    { "pergunta": "Vocês atendem convênios?",
+      "resposta": "Consulte a nossa equipe pelo WhatsApp para saber as formas de atendimento e pagamento disponíveis." },
+    { "pergunta": "Ao enviar o formulário, minha consulta já está marcada?",
+      "resposta": "Ainda não. O formulário abre o WhatsApp com sua solicitação organizada. A nossa equipe responde para confirmar o dia e o horário disponíveis." },
+    { "pergunta": "Como entro em contato com a equipe?",
+      "resposta": "Pelo WhatsApp ou telefone (47) 98825-1098, ou pessoalmente na clínica, no horário de funcionamento." }
+  ],
+
+  "chamadaFinal": {
+    "titulo": "Vamos cuidar do seu sorriso?",
+    "texto": "Entre em contato com nossa equipe e dê o primeiro passo para cuidar da sua saúde bucal."
+  },
+
+  "agendamento": {
+    "titulo": "Solicite seu agendamento",
+    "texto": "Preencha os dados abaixo e envie pelo WhatsApp. Nossa equipe responde para confirmar o dia e o horário.",
+    "motivos": ["Avaliação / primeira consulta", "Dor ou desconforto", "Limpeza", "Orçamento de tratamento", "Retorno", "Outro motivo"],
+    "periodos": ["Manhã", "Tarde", "Fim da tarde (após 17h)", "Sábado pela manhã", "Qualquer horário"]
+  }
+}
