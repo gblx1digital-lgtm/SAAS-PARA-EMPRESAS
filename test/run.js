@@ -217,6 +217,14 @@ async function main() {
   r = await req('POST', '/api/google/plan', { segments: ['odontologia'], areas: ['SC'], minPopulation: 200000 });
   assert.ok(r.data.areas >= 3 && r.data.areas <= 10, `cidades grandes de SC: ${r.data.areas}`);
 
+  // Nichos intercalados: mesmo com limite baixo, a rodada passa por todos os nichos
+  calls.search.length = 0;
+  r = await req('POST', '/api/google/search', { segments: ['odontologia', 'pizzaria', 'lanchonete'], areas: ['Blumenau, SC', 'Itajaí, SC'], maxCalls: 4 });
+  assert.deepEqual(calls.search.map(s => s.textQuery), [
+    'dentista em Blumenau, SC', 'pizzaria em Blumenau, SC', 'pizzaria em Blumenau, SC', 'lanchonete em Blumenau, SC'
+  ]);
+  assert.ok(r.data.queriesLeft > 0, 'avisa que faltam buscas');
+
   console.log('✅ Todos os testes passaram.');
 }
 

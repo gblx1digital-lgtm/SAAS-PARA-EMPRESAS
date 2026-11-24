@@ -168,13 +168,23 @@ function plan({ segments = [], areas = [], minPopulation = 0, redo = false }) {
   const areaList = cities.expandAreas(areas.map(a => String(a || '').trim()).filter(Boolean), Number(minPopulation) || 0).slice(0, 6000);
   const history = log();
   const limit = Date.now() - REDO_AFTER_DAYS * 86400000;
-  const pending = [];
+  // Uma fila por nicho, cidade por cidade (todos os termos da cidade antes da próxima)
   let skippedRecent = 0;
-  for (const seg of segs) for (const term of BY_ID[seg].terms) for (const area of areaList) {
-    const q = `${term} em ${area}`;
-    const done = history[q];
-    if (!redo && done && new Date(done.at).getTime() > limit) { skippedRecent++; continue; }
-    pending.push({ seg, q });
+  const queues = segs.map(seg => {
+    const list = [];
+    for (const area of areaList) for (const term of BY_ID[seg].terms) {
+      const q = `${term} em ${area}`;
+      const done = history[q];
+      if (!redo && done && new Date(done.at).getTime() > limit) { skippedRecent++; continue; }
+      list.push({ seg, q });
+    }
+    return list;
+  });
+  // Intercala os nichos (odontologia, pizzaria, lanchonete, odontologia...) para que toda rodada,
+  // mesmo com limite baixo de consultas, traga empresas de todos os nichos escolhidos
+  const pending = [];
+  for (let i = 0; queues.some(l => i < l.length); i++) {
+    for (const list of queues) if (i < list.length) pending.push(list[i]);
   }
   return { segs, areaList, pending, skippedRecent };
 }
