@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Prospecção de Sites</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">P</span> Prospecção <span class="brand-sub">de Sites</span></div>
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="empresas" role="tab">Empresas</button>
+      <button class="tab" data-tab="buscar" role="tab">Buscar no Google</button>
+    </nav>
+    <button class="btn btn-ghost btn-sm" id="btn-logout">Sair</button>
+  </header>
+
+  <main class="container">
+    <!-- ================= EMPRESAS ================= -->
+    <section class="panel active" id="tab-empresas">
+      <div class="kpis" id="kpis"></div>
+
+      <div class="filters">
+        <input type="search" id="f-q" placeholder="Buscar nome, bairro, cidade ou telefone">
+        <select id="f-segment"><option value="">Todos os nichos</option></select>
+        <select id="f-state"><option value="">Todos os estados</option></select>
+        <select id="f-city"><option value="">Todas as cidades</option></select>
+        <select id="f-site">
+          <option value="sem">Sem site próprio</option>
+          <option value="nenhum">Sem site nenhum</option>
+          <option value="social">Só rede social</option>
+          <option value="plataforma">Só iFood / Doctoralia etc.</option>
+          <option value="proprio">Com site próprio</option>
+          <option value="">Com e sem site</option>
+        </select>
+        <select id="f-minRating">
+          <option value="">Qualquer nota</option>
+          <option value="4">Nota 4,0+</option>
+          <option value="4.5">Nota 4,5+</option>
+        </select>
+        <select id="f-status"><option value="">Todos os status</option></select>
+        <select id="f-sort">
+          <option value="prioridade">Ordenar: prioridade</option>
+          <option value="nota">Ordenar: maior nota</option>
+          <option value="avaliacoes">Ordenar: mais avaliações</option>
+          <option value="recentes">Ordenar: mais recentes</option>
+          <option value="nome">Ordenar: nome</option>
+        </select>
+        <label class="check"><input type="checkbox" id="f-mobile"> Só celular</label>
+        <label class="check"><input type="checkbox" id="f-photos"> Só com fotos</label>
+        <a class="btn btn-ghost btn-sm" id="btn-csv" href="/api/leads.csv">Exportar planilha</a>
+      </div>
+
+      <p class="muted small" id="list-count"></p>
+      <div class="grid" id="lead-list"></div>
+      <div class="pager" id="pager"></div>
+    </section>
+
+    <!-- ================= BUSCAR ================= -->
+    <section class="panel" id="tab-buscar">
+      <div class="card">
+        <h2>Buscar empresas no Google Maps</h2>
+        <p class="muted">Busca cada nicho em cada cidade/bairro e guarda só as empresas <strong>sem site próprio</strong>, com todas as informações que o Google tem: telefone, endereço, horário, nota, avaliações, fotos, serviços e formas de pagamento.</p>
+        <div class="notice" id="google-off" hidden>⚠️ A chave do Google não está configurada. Defina <code>GOOGLE_PLACES_API_KEY</code> nas variáveis do servidor.</div>
+
+        <h3>Nichos</h3>
+        <div class="chips" id="g-segments"></div>
+
+        <h3>Onde buscar <small class="muted">(uma por linha: "Cidade, UF" ou "Bairro, Cidade")</small></h3>
+        <textarea id="g-areas" rows="8"></textarea>
+        <div class="row">
+          <label>Estado
+            <select id="g-uf"></select>
+          </label>
+          <label>Cidades com pelo menos
+            <select id="g-minpop">
+              <option value="200000">200 mil habitantes</option>
+              <option value="100000" selected>100 mil habitantes</option>
+              <option value="50000">50 mil habitantes</option>
+              <option value="20000">20 mil habitantes</option>
+            </select>
+          </label>
+          <button class="btn btn-ghost" id="btn-fill-state" type="button">Adicionar as cidades do estado</button>
+        </div>
+
+        <div class="row">
+          <label>Limite de consultas nesta rodada
+            <input type="number" id="g-max" min="1" max="200" value="30">
+          </label>
+          <label class="check"><input type="checkbox" id="g-nosite" checked> Guardar só quem <strong>não tem site próprio</strong></label>
+          <label class="check"><input type="checkbox" id="g-redo"> Repetir buscas feitas nos últimos 30 dias</label>
+        </div>
+        <p class="hint" id="g-plan"></p>
+
+        <div class="actions">
+          <button class="btn btn-primary" id="btn-search">Buscar</button>
+          <button class="btn btn-ghost" id="btn-save-areas" type="button">Salvar lista de cidades</button>
+        </div>
+        <div class="result" id="g-result" hidden></div>
+        <p class="muted small">Cada consulta traz até 20 empresas e é cobrada pelo Google (há uma cota grátis por mês). Uma busca só pode trazer até 60 empresas: em cidades grandes, adicione bairros ("Centro, Joinville") para encontrar mais.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= FICHA DA EMPRESA ================= -->
+  <dialog id="detail" class="detail">
+    <div class="detail-head">
+      <div>
+        <h2 id="d-name"></h2>
+        <div class="muted" id="d-sub"></div>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="d-close" aria-label="Fechar">✕</button>
+    </div>
+    <div class="detail-body" id="d-body"></div>
+  </dialog>
+
+  <dialog id="viewer" class="viewer">
+    <img id="viewer-img" alt="">
+    <div class="viewer-bar">
+      <span id="viewer-credit" class="small"></span>
+      <span>
+        <button class="btn btn-ghost btn-sm" id="viewer-prev">‹</button>
+        <button class="btn btn-ghost btn-sm" id="viewer-next">›</button>
+        <button class="btn btn-ghost btn-sm" id="viewer-close">Fechar</button>
+      </span>
+    </div>
+  </dialog>
+
+  <script src="/app.js"></script>
+</body>
+</html>

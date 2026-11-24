@@ -1,0 +1,19 @@
+{
+  "name": "prospeccao-sites",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Encontra no Google Maps empresas sem site (odontologia, pizzaria, lanchonete) e reúne todas as informações delas.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/run.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "express": "^4.22.3",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^7.2.0"
+  }
+}
