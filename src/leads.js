@@ -93,7 +93,7 @@ function filter(q = {}) {
     (!q.site || siteMatches(l, q.site)) &&
     (!q.priority || intel.score(l).level === q.priority) &&
     (!text || norm(l.name).includes(text) || norm(l.bairro).includes(text) || norm(l.city).includes(text) ||
-      norm(l.notes).includes(text) || (digits.length >= 4 && String(l.phone).includes(digits)))
+      norm(l.notes).includes(text) || norm(l.instagramManual).includes(text) || (digits.length >= 4 && String(l.phone).includes(digits)))
   );
 }
 
@@ -153,7 +153,7 @@ function full(id) {
   if (!l) return null;
   const bad = new Set(intel.complaints(l));
   return { ...l, reviews: (l.reviews || []).map(r => ({ ...r, complaint: bad.has(r) })), complaintCount: bad.size,
-    phoneFormatted: formatPhone(l.phone), instagram: intel.instagramOf(l), intel: intel.score(l), stateName: STATE_NAMES[l.uf] || l.uf };
+    phoneFormatted: formatPhone(l.phone), instagram: intel.instagramOf(l), instagramFromGoogle: intel.instagramOf({ website: l.website }), intel: intel.score(l), stateName: STATE_NAMES[l.uf] || l.uf };
 }
 
 function update(id, changes) {
@@ -161,6 +161,11 @@ function update(id, changes) {
   if (!lead) return null;
   if (changes.status && STATUSES[changes.status]) lead.status = changes.status;
   if (typeof changes.notes === 'string') lead.notes = changes.notes.slice(0, 4000);
+  if (typeof changes.instagram === 'string') {
+    const insta = intel.normalizeInstagram(changes.instagram);
+    if (insta === null) throw Object.assign(new Error('Instagram inválido. Use @perfil ou o link do perfil.'), { status: 400 });
+    lead.instagramManual = insta;
+  }
   lead.updatedAt = new Date().toISOString();
   storage.save('leads');
   return lead;

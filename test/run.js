@@ -198,12 +198,24 @@ async function main() {
   assert.equal(r.data.status, 'contatado');
   assert.equal((await req('GET', '/api/leads?status=contatado')).data.total, 1);
 
+  // Instagram encontrado na mão
+  r = await req('PATCH', `/api/leads/${p1.id}`, { instagram: '@pizzaria.semsite' });
+  assert.equal(r.data.instagram, 'https://www.instagram.com/pizzaria.semsite/');
+  assert.equal(r.data.instagramManual, 'https://www.instagram.com/pizzaria.semsite/');
+  assert.equal(r.data.instagramFromGoogle, '');
+  r = await req('PATCH', `/api/leads/${p1.id}`, { instagram: 'https://www.instagram.com/pizzaria.semsite?igsh=abc' });
+  assert.equal(r.data.instagram, 'https://www.instagram.com/pizzaria.semsite/');
+  r = await req('PATCH', `/api/leads/${p1.id}`, { instagram: 'isso não é um perfil' });
+  assert.equal(r.status, 400);
+  assert.equal((await req('GET', '/api/leads?q=semsite')).data.items[0].instagram, 'https://www.instagram.com/pizzaria.semsite/');
+
   // Atualizar do Google mantém anotações
   r = await req('POST', `/api/leads/${p1.id}/refresh`);
   assert.equal(r.status, 200, JSON.stringify(r.data));
   assert.equal(r.data.rating, 4.9);
   assert.equal(r.data.notes, 'Falei com o dono');
   assert.equal(r.data.status, 'contatado');
+  assert.equal(r.data.instagram, 'https://www.instagram.com/pizzaria.semsite/', 'atualizar não apaga o Instagram salvo');
   assert.equal(calls.details, 1);
 
   // Planilha
@@ -213,6 +225,7 @@ async function main() {
   assert.ok(csv.includes('https://wa.me/5547999990001'));
   assert.ok(csv.includes('Pizzas artesanais'));
   assert.ok(csv.includes('2★ Rui: Pizza chegou fria'));
+  assert.ok(csv.includes('https://www.instagram.com/pizzaria.semsite/'));
   assert.ok(csv.split('\r\n').length === 4, 'cabeçalho + 3 empresas');
 
   // Excluir

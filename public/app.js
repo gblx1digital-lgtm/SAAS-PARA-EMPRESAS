@@ -184,7 +184,14 @@ function renderDetail(l) {
     <dt>Telefone</dt><dd>${l.phone ? `<strong>${esc(l.phoneFormatted)}</strong> ${l.mobile ? '<span class="badge">celular</span>' : '<span class="badge">fixo</span>'}` : '<span class="muted">não informado</span>'}</dd>
     ${l.phoneIntl ? `<dt>Internacional</dt><dd>${esc(l.phoneIntl)}</dd>` : ''}
     <dt>Site no Google</dt><dd>${safeUrl(l.website) ? `<a target="_blank" rel="noopener" href="${esc(l.website)}">${esc(l.website)}</a>` : '<span class="muted">nenhum</span>'} <span class="tag site-${esc(i.site.kind)}">${esc(i.site.label)}</span></dd>
-    <dt>Instagram</dt><dd>${safeUrl(l.instagram) ? `<a target="_blank" rel="noopener" href="${esc(l.instagram)}">${esc(l.instagram)}</a>` : `<a target="_blank" rel="noopener" href="${esc(instaSearch(l))}">Procurar no Google ›</a>`}</dd>
+    <dt>Instagram</dt><dd>${l.instagramFromGoogle
+      ? `<a target="_blank" rel="noopener" href="${esc(l.instagramFromGoogle)}">${esc(l.instagramFromGoogle)}</a> <span class="muted small">(do Google)</span>`
+      : `${safeUrl(l.instagram) ? `<a target="_blank" rel="noopener" href="${esc(l.instagram)}">${esc(l.instagram)}</a> <span class="muted small">(salvo por você)</span><br>` : ''}
+        <div class="insta-edit">
+          <input id="d-insta" placeholder="@perfil ou link do Instagram" value="${esc(l.instagramManual ? `@${l.instagramManual.split('/')[3]}` : '')}">
+          <button class="btn btn-ghost btn-sm" id="d-insta-save">Salvar</button>
+        </div>
+        <a class="small" target="_blank" rel="noopener" href="${esc(instaSearch(l))}">Procurar no Google ›</a> <span class="muted small" id="d-insta-msg"></span>`}</dd>
   </dl>
   <div class="actions">
     ${l.mobile ? `<a class="btn btn-wa" target="_blank" rel="noopener" href="https://wa.me/55${esc(l.phone)}">Abrir WhatsApp</a>` : ''}
@@ -275,6 +282,12 @@ $('#d-body').addEventListener('click', async (e) => {
   if (!t || !CURRENT) return;
   const msg = (s) => { const m = $('#d-msg'); if (m) m.textContent = s; };
   if (t.dataset.photo) return openViewer(Number(t.dataset.photo));
+  if (t.id === 'd-insta-save') {
+    try {
+      renderDetail(await api(`/api/leads/${CURRENT.id}`, { method: 'PATCH', body: { instagram: $('#d-insta').value } }));
+      $('#d-insta-msg').textContent = 'Salvo ✓';
+    } catch (err) { $('#d-insta-msg').textContent = err.message; }
+  }
   if (t.id === 'd-save') {
     try {
       renderDetail(await api(`/api/leads/${CURRENT.id}`, { method: 'PATCH', body: { status: $('#d-status').value, notes: $('#d-notes').value } }));

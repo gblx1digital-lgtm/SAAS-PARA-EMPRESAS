@@ -104,9 +104,13 @@ app.get('/api/leads/:id', (req, res) => {
 });
 
 app.patch('/api/leads/:id', (req, res) => {
-  const lead = leads.update(req.params.id, { status: req.body?.status, notes: req.body?.notes });
-  if (!lead) return res.status(404).json({ error: 'Empresa não encontrada.' });
-  res.json(leads.full(lead.id));
+  try {
+    const lead = leads.update(req.params.id, { status: req.body?.status, notes: req.body?.notes, instagram: req.body?.instagram });
+    if (!lead) return res.status(404).json({ error: 'Empresa não encontrada.' });
+    res.json(leads.full(lead.id));
+  } catch (e) {
+    res.status(e.status || 500).json({ error: e.message });
+  }
 });
 
 app.delete('/api/leads/:id', (req, res) => {

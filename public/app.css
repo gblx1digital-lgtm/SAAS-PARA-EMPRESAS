@@ -166,6 +166,8 @@ dl.info dd { margin: 0; overflow-wrap: anywhere; }
 .review { margin: 0 0 10px; padding: 10px 14px; background: #f9fafb; border-left: 3px solid #fbbf24; border-radius: 8px; }
 .review.complaint { border-left-color: var(--red); background: #fef2f2; }
 .tag.complaint { background: #fee2e2; color: #b91c1c; }
+.insta-edit { display: flex; gap: 6px; margin: 2px 0 4px; max-width: 360px; }
+.insta-edit input { flex: 1; min-width: 0; padding: 6px 9px; }
 .presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
 .review p { margin: 4px 0 0; white-space: pre-line; }
 

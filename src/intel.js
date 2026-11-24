@@ -59,10 +59,25 @@ function classifySite(lead) {
 /** Sem site próprio = nenhum, só rede social ou só plataforma. */
 function hasNoOwnSite(lead) { return classifySite(lead).kind !== 'proprio'; }
 
-/** Link do Instagram, quando é o "site" cadastrado no Google. */
+/** Link do Instagram: o cadastrado como "site" no Google ou, se não houver, o que você salvou na ficha. */
 function instagramOf(lead) {
   const site = String(lead.website || '');
-  return /instagr(am\.com|\.am)/i.test(hostOf(site)) ? site : '';
+  if (/instagr(am\.com|\.am)/i.test(hostOf(site))) return site;
+  return lead.instagramManual || '';
+}
+
+/**
+ * Aceita "@perfil", "perfil", "instagram.com/perfil" ou o link completo e devolve
+ * "https://www.instagram.com/perfil/". Vazio = apagar. null = inválido.
+ */
+function normalizeInstagram(raw) {
+  let s = String(raw || '').trim();
+  if (!s) return '';
+  const m = s.match(/^(?:https?:\/\/)?(?:www\.|m\.)?instagr(?:am\.com|\.am)\/([^/?#\s]+)/i);
+  if (m) s = m[1];
+  s = s.replace(/^@/, '');
+  if (!/^[A-Za-z0-9._]{1,30}$/.test(s) || ['p', 'reel', 'reels', 'stories', 'explore'].includes(s.toLowerCase())) return null;
+  return `https://www.instagram.com/${s}/`;
 }
 
 /**
@@ -115,4 +130,4 @@ function complaints(lead) {
   });
 }
 
-module.exports = { classifySite, hasNoOwnSite, instagramOf, score, hostOf, complaints };
+module.exports = { classifySite, hasNoOwnSite, instagramOf, normalizeInstagram, score, hostOf, complaints };
