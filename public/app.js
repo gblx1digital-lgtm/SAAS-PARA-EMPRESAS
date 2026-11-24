@@ -197,7 +197,7 @@ function renderDetail(l) {
     ${l.bairro ? `<dt>Bairro</dt><dd>${esc(l.bairro)}</dd>` : ''}
     <dt>Cidade</dt><dd>${esc([l.city, l.stateName].filter(Boolean).join(' - ') || '—')}</dd>
     ${l.cep ? `<dt>CEP</dt><dd>${esc(l.cep)}</dd>` : ''}
-    ${l.lat != null ? `<dt>Coordenadas</dt><dd>${esc(l.lat)}, ${esc(l.lng)}</dd>` : ''}
+    ${l.lat != null ? `<dt>Coordenadas</dt><dd>${esc(Number(l.lat).toFixed(6))}, ${esc(Number(l.lng).toFixed(6))}</dd>` : ''}
     ${l.plusCode ? `<dt>Plus Code</dt><dd>${esc(l.plusCode)}</dd>` : ''}
   </dl>`;
 
