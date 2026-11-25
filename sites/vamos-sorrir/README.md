@@ -8,11 +8,11 @@ Site de uma página (mais a política de privacidade) feito para transformar vis
   - título com a busca que o paciente faz ("Cuide do seu sorriso no Centro de Joinville");
   - **aviso "Aberto agora · fecha às 19h"** calculado no horário de Brasília, que também mostra "Fechado agora · abre amanhã às 8h", "abre segunda" etc.;
   - botões de WhatsApp e de ligar;
-  - nota do Google, fotos da clínica e o selo da responsável técnica.
+  - fotos da clínica e o selo da responsável técnica.
 - **Agendar é simples:** 3 passos que tiram a insegurança de entrar em contato.
 - **Conte o que você precisa:** cartões pensados no problema do paciente ("Estou com dor", "Perdi um dente", "Quero clarear"...). Cada um abre o WhatsApp com a mensagem daquela situação, sem afirmar tratamentos que a clínica não confirmou.
 - **A clínica:** fotos e fatos verificados (endereço, horários, WhatsApp, responsável técnica com CRO).
-- **Avaliações:** nota e total do Google, botão para ler e botão **"Já é paciente? Avalie a clínica"**, que abre direto a tela de avaliação do Google.
+- **Avaliações do Google (opcional, hoje desligada):** nota e total no topo e uma seção com botão para ler e **"Já é paciente? Avalie a clínica"**, que abre direto a tela de avaliação do Google. Fica escondida enquanto `mostrarAvaliacoes` for `false`.
 - **Galeria** com ampliação.
 - **Localização:**
   - horário com o **dia de hoje destacado** e aviso sobre feriados;
@@ -40,6 +40,7 @@ Quando a clínica aprovar, mude para `false`. O build **se recusa a gerar a vers
 
 Todo o texto está no **`conteudo.json`**. Os campos que começam com `_` explicam o que vai em cada lugar.
 
+- **`mostrarAvaliacoes`:** `false` esconde a nota do Google e a seção de avaliações. Mude para `true` se a clínica quiser mostrar, por exemplo quando a nota subir.
 - **`intencoes`:** os cartões de "Conte o que você precisa", com título, texto e a mensagem que vai para o WhatsApp.
 - **`passos`:** os 3 passos do "Agendar é simples".
 - **`clinica.horarios`:** os horários. `diasSemana` (0 = domingo … 6 = sábado) alimenta o "Aberto agora".
@@ -67,12 +68,13 @@ npm start
 npm test
 ```
 
-O teste abre o site num navegador de verdade e confere 38 pontos, entre eles:
+O teste abre o site num navegador de verdade e confere 39 pontos, entre eles:
 - o "Aberto agora" em 7 dias e horários diferentes, simulando o relógio;
 - os links de WhatsApp, telefone, Maps, Waze e avaliação;
 - a galeria, o formulário, o menu e a barra do celular;
 - o layout de 320 a 1440 px;
 - o modo prévia e a versão final;
+- a nota do Google escondida e, com a chave ligada, de volta;
 - os cookies.
 
 ## Publicar
@@ -87,7 +89,7 @@ O teste abre o site num navegador de verdade e confere 38 pontos, entre eles:
 2. Responsável técnica, CRO e EPAO confirmados (foram lidos na placa da fachada).
 3. Os cartões de atendimento combinam com o que a clínica faz.
 4. `site.url` com o domínio definitivo.
-5. Nota e número de avaliações atualizados.
+5. Se ligar `mostrarAvaliacoes`, nota e número de avaliações atualizados.
 6. Opcional: `googleAnalyticsId` (GA4) e `googleSearchConsole`.
 7. `"previa": false`, `npm test`, `npm run build` e publicar.
 8. **Depois de publicar:** envie o `sitemap.xml` no Search Console e coloque o link do site no **Perfil da Empresa no Google**.

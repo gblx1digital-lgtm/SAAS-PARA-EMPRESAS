@@ -1,9 +1,7 @@
 {
   "_leia_me": "Todo o texto do site está aqui. Edite, rode 'npm run build' e publique a pasta dist. Campos que começam com _ são só explicações.",
-
   "previa": true,
   "_previa": "true = prévia para apresentar à clínica: mostra uma faixa de aviso e NÃO aparece no Google. Mude para false quando a clínica aprovar o site.",
-
   "site": {
     "url": "https://www.vamossorrirjoinville.com.br",
     "_url": "Domínio definitivo do site (sem barra no final). Usado no sitemap, no Google e no compartilhamento.",
@@ -14,7 +12,6 @@
     "googleSearchConsole": "",
     "_googleSearchConsole": "Código da meta tag de verificação do Search Console (só o valor do content)."
   },
-
   "clinica": {
     "nome": "Vamos Sorrir",
     "segmento": "Clínica odontológica",
@@ -46,13 +43,49 @@
     "avaliacoes": 71,
     "_nota": "Nota e número de avaliações no Google. Atualize de tempos em tempos.",
     "horarios": [
-      { "dias": "Segunda a sexta", "curto": "Seg. a sex.", "diasSemana": [1, 2, 3, 4, 5], "abre": "08:00", "fecha": "19:00", "schema": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] },
-      { "dias": "Sábado", "curto": "Sáb.", "diasSemana": [6], "abre": "08:00", "fecha": "14:00", "schema": ["Saturday"] },
-      { "dias": "Domingo", "curto": "Dom.", "diasSemana": [0], "fechado": true }
+      {
+        "dias": "Segunda a sexta",
+        "curto": "Seg. a sex.",
+        "diasSemana": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "abre": "08:00",
+        "fecha": "19:00",
+        "schema": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ]
+      },
+      {
+        "dias": "Sábado",
+        "curto": "Sáb.",
+        "diasSemana": [
+          6
+        ],
+        "abre": "08:00",
+        "fecha": "14:00",
+        "schema": [
+          "Saturday"
+        ]
+      },
+      {
+        "dias": "Domingo",
+        "curto": "Dom.",
+        "diasSemana": [
+          0
+        ],
+        "fechado": true
+      }
     ],
     "_horarios": "diasSemana: 0 = domingo ... 6 = sábado. Usado para mostrar 'Aberto agora' no site."
   },
-
   "whatsappMensagens": {
     "geral": "Olá! Conheci a Vamos Sorrir pelo site e gostaria de obter informações sobre uma consulta.",
     "avaliacao": "Olá! Vi o site da Vamos Sorrir e gostaria de agendar uma avaliação.",
@@ -61,9 +94,12 @@
     "galeria": "Olá! Vi as fotos da clínica no site e gostaria de agendar uma avaliação.",
     "passos": "Olá! Vi no site como funciona o agendamento e gostaria de marcar uma avaliação."
   },
-
   "hero": {
-    "titulo": ["Cuide do seu ", "sorriso", " no Centro de Joinville"],
+    "titulo": [
+      "Cuide do seu ",
+      "sorriso",
+      " no Centro de Joinville"
+    ],
     "_titulo": "Três partes: a do meio ganha o traço de sorriso embaixo.",
     "texto": "A Vamos Sorrir atende de segunda a sábado, na Rua 9 de Março. Conte o que você precisa pelo WhatsApp e a nossa equipe encontra um horário para a sua avaliação.",
     "foto": "recepcao.jpg",
@@ -73,43 +109,70 @@
     "fotoSecundariaAlt": "Fachada amarela da Vamos Sorrir na Rua 9 de Março, Centro de Joinville",
     "fotoSecundariaPosicao": "center 38%"
   },
-
   "passos": {
     "titulo": "Agendar é simples",
     "texto": "Sem ligação demorada e sem formulário complicado.",
     "itens": [
-      { "icone": "conversa", "titulo": "Mande uma mensagem", "texto": "Pelo WhatsApp ou pelo formulário do site, conte o que você precisa e qual é o melhor dia para você." },
-      { "icone": "calendario", "titulo": "A equipe confirma o horário", "texto": "A recepção responde com os horários disponíveis e confirma a sua avaliação." },
-      { "icone": "dente", "titulo": "Venha para a avaliação", "texto": "Na Rua 9 de Março, 396, no Centro. O dentista examina, explica o que encontrou e tira as suas dúvidas." }
+      {
+        "icone": "conversa",
+        "titulo": "Mande uma mensagem",
+        "texto": "Pelo WhatsApp ou pelo formulário do site, conte o que você precisa e qual é o melhor dia para você."
+      },
+      {
+        "icone": "calendario",
+        "titulo": "A equipe confirma o horário",
+        "texto": "A recepção responde com os horários disponíveis e confirma a sua avaliação."
+      },
+      {
+        "icone": "dente",
+        "titulo": "Venha para a avaliação",
+        "texto": "Na Rua 9 de Março, 396, no Centro. O dentista examina, explica o que encontrou e tira as suas dúvidas."
+      }
     ]
   },
-
   "intencoes": {
     "titulo": "Conte o que você precisa",
     "texto": "Escolha a situação mais parecida com a sua. A mensagem já vai pronta para a nossa equipe.",
     "nota": "Os tratamentos realizados e a indicação para cada caso são definidos pelo dentista na avaliação.",
     "itens": [
-      { "icone": "dor", "titulo": "Estou com dor ou desconforto",
+      {
+        "icone": "dor",
+        "titulo": "Estou com dor ou desconforto",
         "texto": "Dor de dente, sensibilidade ou gengiva inflamada pedem atenção. Fale com a equipe para ver o primeiro horário disponível.",
-        "mensagem": "Olá! Estou com dor/desconforto no dente e gostaria de saber o primeiro horário disponível para uma avaliação." },
-      { "icone": "avaliacao", "titulo": "Check-up e limpeza",
+        "mensagem": "Olá! Estou com dor/desconforto no dente e gostaria de saber o primeiro horário disponível para uma avaliação."
+      },
+      {
+        "icone": "avaliacao",
+        "titulo": "Check-up e limpeza",
         "texto": "Faz tempo que não vai ao dentista? Comece pela avaliação: o dentista examina dentes e gengiva e indica os próximos passos.",
-        "mensagem": "Olá! Faz um tempo que não vou ao dentista e gostaria de agendar uma avaliação e saber sobre limpeza." },
-      { "icone": "restauracao", "titulo": "Dente quebrado ou com cárie",
+        "mensagem": "Olá! Faz um tempo que não vou ao dentista e gostaria de agendar uma avaliação e saber sobre limpeza."
+      },
+      {
+        "icone": "restauracao",
+        "titulo": "Dente quebrado ou com cárie",
         "texto": "Um dente lascado, com cárie ou uma restauração que caiu costuma ter solução. Quanto antes avaliar, melhor.",
-        "mensagem": "Olá! Estou com um dente quebrado/com cárie e gostaria de agendar uma avaliação." },
-      { "icone": "clareamento", "titulo": "Quero dentes mais claros",
+        "mensagem": "Olá! Estou com um dente quebrado/com cárie e gostaria de agendar uma avaliação."
+      },
+      {
+        "icone": "clareamento",
+        "titulo": "Quero dentes mais claros",
         "texto": "O clareamento só é feito depois de uma avaliação, que verifica se ele é indicado para você.",
-        "mensagem": "Olá! Tenho interesse em clareamento dental. Vocês realizam? Como funciona a avaliação?" },
-      { "icone": "ortodontia", "titulo": "Quero alinhar os dentes",
+        "mensagem": "Olá! Tenho interesse em clareamento dental. Vocês realizam? Como funciona a avaliação?"
+      },
+      {
+        "icone": "ortodontia",
+        "titulo": "Quero alinhar os dentes",
         "texto": "Dentes tortos ou mordida desalinhada costumam ser tratados com aparelho, sempre a partir de um planejamento individual.",
-        "mensagem": "Olá! Quero alinhar meus dentes. Vocês trabalham com aparelho? Como faço para agendar uma avaliação?" },
-      { "icone": "implante", "titulo": "Perdi um ou mais dentes",
+        "mensagem": "Olá! Quero alinhar meus dentes. Vocês trabalham com aparelho? Como faço para agendar uma avaliação?"
+      },
+      {
+        "icone": "implante",
+        "titulo": "Perdi um ou mais dentes",
         "texto": "Hoje existem várias formas de repor dentes, como implantes e próteses. A indicação depende da avaliação.",
-        "mensagem": "Olá! Perdi um ou mais dentes e gostaria de saber quais opções vocês oferecem. Como agendo uma avaliação?" }
+        "mensagem": "Olá! Perdi um ou mais dentes e gostaria de saber quais opções vocês oferecem. Como agendo uma avaliação?"
+      }
     ]
   },
-
   "sobre": {
     "titulo": "Uma clínica no coração de Joinville",
     "paragrafos": [
@@ -117,72 +180,125 @@
       "Atendemos de segunda a sexta até as 19h e também aos sábados pela manhã, para o cuidado com o sorriso caber na sua rotina."
     ],
     "_paragrafos": "Espaço para a história da clínica, há quanto tempo atende, o que a torna diferente. Use só informações reais.",
-    "fotos": ["consultorio-1.jpg", "corredor.jpg", "consultorio-2.jpg"],
+    "fotos": [
+      "consultorio-1.jpg",
+      "corredor.jpg",
+      "consultorio-2.jpg"
+    ],
     "destaques": [],
     "_destaques": "Diferenciais confirmados pela clínica, um por item. Vazio = não mostra.",
     "equipe": [],
     "_equipe": "Dentistas da clínica: { \"nome\": \"Dra. Nome\", \"cro\": \"CRO/SC 00000\", \"especialidade\": \"...\", \"foto\": \"equipe-nome.jpg\" }. Vazio = não mostra a parte da equipe."
   },
-
+  "mostrarAvaliacoes": false,
+  "_mostrarAvaliacoes": "true = mostra a nota do Google no topo e a seção de avaliações (com o botão para o paciente avaliar a clínica). false = esconde tudo isso.",
   "avaliacoesSecao": {
     "titulo": "Quem já veio, conta no Google",
     "texto": "As avaliações da Vamos Sorrir são públicas e ficam no Google. Leia o que os pacientes dizem antes de agendar e, depois da sua consulta, conte como foi."
   },
-
   "depoimentos": [],
   "_depoimentos": "Depoimentos reais, com autorização do paciente: { \"texto\": \"...\", \"autor\": \"Nome S.\" }. Vazio = não mostra.",
-
   "galeria": {
     "titulo": "Por dentro da clínica",
     "texto": "Recepção, consultórios e a fachada amarela da Rua 9 de Março.",
     "fotos": [
-      { "arquivo": "fachada.jpg", "legenda": "Fachada", "alt": "Fachada amarela da clínica Vamos Sorrir na Rua 9 de Março, Centro de Joinville" },
-      { "arquivo": "recepcao.jpg", "legenda": "Recepção", "alt": "Recepção da Vamos Sorrir com balcão de atendimento e sala de espera" },
-      { "arquivo": "consultorio-1.jpg", "legenda": "Consultório", "alt": "Consultório odontológico da Vamos Sorrir com cadeira e equipamentos" },
-      { "arquivo": "corredor.jpg", "legenda": "Acesso aos consultórios", "alt": "Corredor de acesso aos consultórios da Vamos Sorrir" },
-      { "arquivo": "entrada.jpg", "legenda": "Entrada", "alt": "Entrada da Vamos Sorrir vista da calçada, com a recepção ao fundo" },
-      { "arquivo": "consultorio-2.jpg", "legenda": "Consultório", "alt": "Cadeira odontológica e refletor em consultório da Vamos Sorrir" }
+      {
+        "arquivo": "fachada.jpg",
+        "legenda": "Fachada",
+        "alt": "Fachada amarela da clínica Vamos Sorrir na Rua 9 de Março, Centro de Joinville"
+      },
+      {
+        "arquivo": "recepcao.jpg",
+        "legenda": "Recepção",
+        "alt": "Recepção da Vamos Sorrir com balcão de atendimento e sala de espera"
+      },
+      {
+        "arquivo": "consultorio-1.jpg",
+        "legenda": "Consultório",
+        "alt": "Consultório odontológico da Vamos Sorrir com cadeira e equipamentos"
+      },
+      {
+        "arquivo": "corredor.jpg",
+        "legenda": "Acesso aos consultórios",
+        "alt": "Corredor de acesso aos consultórios da Vamos Sorrir"
+      },
+      {
+        "arquivo": "entrada.jpg",
+        "legenda": "Entrada",
+        "alt": "Entrada da Vamos Sorrir vista da calçada, com a recepção ao fundo"
+      },
+      {
+        "arquivo": "consultorio-2.jpg",
+        "legenda": "Consultório",
+        "alt": "Cadeira odontológica e refletor em consultório da Vamos Sorrir"
+      }
     ],
     "_fotos_fonte": "Fotos do perfil da clínica no Google Maps (publicadas pela própria clínica; a da recepção por Marketing Joinville). Confirme a autorização antes de sair da prévia."
   },
-
   "localizacao": {
     "titulo": "Venha nos visitar",
     "texto": "No Centro de Joinville, na Rua 9 de Março.",
     "notaFeriados": "Em feriados o horário pode mudar. Confirme pelo WhatsApp."
   },
-
   "faq": [
-    { "pergunta": "Como faço para agendar uma consulta?",
-      "resposta": "Pelo WhatsApp (47) 98825-1098 ou pelo formulário aqui do site. Você conta o que precisa e o melhor dia ou período, e a nossa equipe confirma o horário com você." },
-    { "pergunta": "Onde fica a clínica?",
-      "resposta": "Na Rua 9 de Março, 396, no Centro de Joinville (SC), CEP 89201-400." },
-    { "pergunta": "Qual é o horário de funcionamento?",
-      "resposta": "De segunda a sexta, das 8h às 19h, e aos sábados, das 8h às 14h. Aos domingos a clínica não abre." },
-    { "pergunta": "Vocês atendem aos sábados?",
-      "resposta": "Sim, aos sábados das 8h às 14h." },
-    { "pergunta": "Quanto custa uma consulta ou um tratamento?",
-      "resposta": "Os valores dependem da avaliação e do tratamento indicado para o seu caso. Fale com a equipe pelo WhatsApp para tirar as suas dúvidas." },
-    { "pergunta": "Vocês atendem convênios?",
-      "resposta": "Consulte a nossa equipe pelo WhatsApp para saber as formas de atendimento e pagamento disponíveis." },
-    { "pergunta": "Como sei se a clínica faz o tratamento de que preciso?",
-      "resposta": "Na seção \"Conte o que você precisa\", escolha a situação mais parecida com a sua e envie a mensagem pronta. A equipe responde e, na avaliação, o dentista indica o tratamento adequado." },
-    { "pergunta": "Ao enviar o formulário, minha consulta já está marcada?",
-      "resposta": "Ainda não. O formulário abre o WhatsApp com a sua solicitação organizada. A nossa equipe responde para confirmar o dia e o horário." }
+    {
+      "pergunta": "Como faço para agendar uma consulta?",
+      "resposta": "Pelo WhatsApp (47) 98825-1098 ou pelo formulário aqui do site. Você conta o que precisa e o melhor dia ou período, e a nossa equipe confirma o horário com você."
+    },
+    {
+      "pergunta": "Onde fica a clínica?",
+      "resposta": "Na Rua 9 de Março, 396, no Centro de Joinville (SC), CEP 89201-400."
+    },
+    {
+      "pergunta": "Qual é o horário de funcionamento?",
+      "resposta": "De segunda a sexta, das 8h às 19h, e aos sábados, das 8h às 14h. Aos domingos a clínica não abre."
+    },
+    {
+      "pergunta": "Vocês atendem aos sábados?",
+      "resposta": "Sim, aos sábados das 8h às 14h."
+    },
+    {
+      "pergunta": "Quanto custa uma consulta ou um tratamento?",
+      "resposta": "Os valores dependem da avaliação e do tratamento indicado para o seu caso. Fale com a equipe pelo WhatsApp para tirar as suas dúvidas."
+    },
+    {
+      "pergunta": "Vocês atendem convênios?",
+      "resposta": "Consulte a nossa equipe pelo WhatsApp para saber as formas de atendimento e pagamento disponíveis."
+    },
+    {
+      "pergunta": "Como sei se a clínica faz o tratamento de que preciso?",
+      "resposta": "Na seção \"Conte o que você precisa\", escolha a situação mais parecida com a sua e envie a mensagem pronta. A equipe responde e, na avaliação, o dentista indica o tratamento adequado."
+    },
+    {
+      "pergunta": "Ao enviar o formulário, minha consulta já está marcada?",
+      "resposta": "Ainda não. O formulário abre o WhatsApp com a sua solicitação organizada. A nossa equipe responde para confirmar o dia e o horário."
+    }
   ],
-
   "chamadaFinal": {
     "titulo": "Vamos sorrir?",
     "texto": "Mande uma mensagem e a nossa equipe encontra o melhor horário para a sua avaliação."
   },
-
   "agendamento": {
     "titulo": "Prefere deixar tudo organizado?",
     "texto": "Preencha e envie pelo WhatsApp. A equipe responde para confirmar o dia e o horário.",
-    "motivos": ["Avaliação / check-up", "Dor ou desconforto", "Dente quebrado ou com cárie", "Clareamento", "Alinhar os dentes (aparelho)", "Repor dentes (implante ou prótese)", "Retorno", "Outro motivo"],
-    "periodos": ["Manhã", "Tarde", "Fim da tarde (após 17h)", "Sábado pela manhã", "Qualquer horário"]
+    "motivos": [
+      "Avaliação / check-up",
+      "Dor ou desconforto",
+      "Dente quebrado ou com cárie",
+      "Clareamento",
+      "Alinhar os dentes (aparelho)",
+      "Repor dentes (implante ou prótese)",
+      "Retorno",
+      "Outro motivo"
+    ],
+    "periodos": [
+      "Manhã",
+      "Tarde",
+      "Fim da tarde (após 17h)",
+      "Sábado pela manhã",
+      "Qualquer horário"
+    ]
   },
-
   "credito": {
     "texto": "Site por GBL Sites & Marketing",
     "url": ""

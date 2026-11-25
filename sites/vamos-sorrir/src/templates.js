@@ -17,6 +17,9 @@ function sorriso(palavra) {
   return `<span class="sorriso">${esc(palavra)}<svg class="sorriso-arco" viewBox="0 0 120 22" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M4 6 Q60 30 116 6" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/></svg></span>`;
 }
 
+/** Mostrar a nota e as avaliações do Google? Controlado por "mostrarAvaliacoes" no conteudo.json. */
+const mostrarAv = (c) => c.mostrarAvaliacoes === true;
+
 function helpers(c, assets) {
   const cl = c.clinica;
   const e = cl.endereco;
@@ -95,7 +98,8 @@ function logo(assets, variante = 'cor') {
 
 function header(c, h, assets, { home = true } = {}) {
   const base = home ? '' : '/';
-  const nav = [['a-clinica', 'A clínica'], ['como-funciona', 'Como funciona'], ['atendimento', 'Atendimento'], ['avaliacoes', 'Avaliações'], ['localizacao', 'Localização']];
+  const nav = [['a-clinica', 'A clínica'], ['como-funciona', 'Como funciona'], ['atendimento', 'Atendimento'],
+    mostrarAv(c) ? ['avaliacoes', 'Avaliações'] : ['galeria', 'Fotos'], ['localizacao', 'Localização']];
   return `${c.previa ? `<div class="previa" role="note">Prévia do site da ${esc(h.cl.nome)}. Conteúdo em validação pela clínica.</div>` : ''}
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 <div class="faixa-topo">
@@ -228,7 +232,9 @@ function home(c, assets) {
         ${h.telBtn(`Ligar ${esc(cl.telefone)}`, 'btn btn-claro btn-lg')}
       </div>
       <ul class="confianca">
-        <li><a href="${esc(h.mapsUrl)}" target="_blank" rel="noopener" data-evento="ver_avaliacoes">${estrelas(cl.nota)}<strong>${h.nota}</strong> · ${cl.avaliacoes} avaliações no Google</a></li>
+        ${mostrarAv(c)
+          ? `<li><a href="${esc(h.mapsUrl)}" target="_blank" rel="noopener" data-evento="ver_avaliacoes">${estrelas(cl.nota)}<strong>${h.nota}</strong> · ${cl.avaliacoes} avaliações no Google</a></li>`
+          : `<li>${icon('relogio')}Atendimento de segunda a sábado</li>`}
         <li>${icon('local')}${esc(h.e.rua)}, ${esc(h.e.numero)} · ${esc(h.e.bairro)}</li>
       </ul>
     </div>
@@ -313,7 +319,7 @@ function home(c, assets) {
   ${depo ? `<div class="wrap">${depo}</div>` : ''}
 </section>`;
 
-  const galeria = `<section class="secao" id="galeria" aria-labelledby="gal-tit">
+  const galeria = `<section class="secao${mostrarAv(c) ? '' : ' secao-creme'}" id="galeria" aria-labelledby="gal-tit">
   <div class="wrap">
     <div class="cab"><p class="rotulo">Galeria</p><h2 id="gal-tit">${esc(c.galeria.titulo)}</h2><p>${esc(c.galeria.texto)}</p></div>
     <ul class="gal-grid">
@@ -338,7 +344,7 @@ function home(c, assets) {
 </section>`;
 
   const L = c.localizacao;
-  const localizacao = `<section class="secao secao-creme" id="localizacao" aria-labelledby="loc-tit">
+  const localizacao = `<section class="secao${mostrarAv(c) ? ' secao-creme' : ''}" id="localizacao" aria-labelledby="loc-tit">
   <div class="wrap loc-grid">
     <div class="loc-card">
       <p class="rotulo">Localização</p>
@@ -359,7 +365,7 @@ function home(c, assets) {
   </div>
 </section>`;
 
-  const faq = `<section class="secao" id="duvidas" aria-labelledby="faq-tit">
+  const faq = `<section class="secao${mostrarAv(c) ? '' : ' secao-creme'}" id="duvidas" aria-labelledby="faq-tit">
   <div class="wrap faq-grid">
     <div class="faq-cab">
       <p class="rotulo">Dúvidas</p>
@@ -412,7 +418,7 @@ ${hero}
 ${passos}
 ${intencoes}
 ${sobre}
-${avaliacoes}
+${mostrarAv(c) ? avaliacoes : ''}
 ${galeria}
 ${localizacao}
 ${faq}

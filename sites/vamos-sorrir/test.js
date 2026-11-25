@@ -65,7 +65,7 @@ async function main() {
       assert.equal(await page.getAttribute('link[rel=canonical]', 'href'), `${C.site.url}/`);
       const og = await page.getAttribute('meta[property="og:image"]', 'content');
       assert.ok(fs.existsSync(path.join(DIST, og.slice(C.site.url.length))));
-      assert.ok((await page.locator('main h2').count()) >= 8, 'cada seção tem seu H2');
+      assert.ok((await page.locator('main h2').count()) >= 7, 'cada seção tem seu H2');
     });
 
     await caso('Prévia fica fora do Google (noindex + robots.txt + cabeçalho) e mostra a faixa', async () => {
@@ -148,13 +148,16 @@ async function main() {
       });
     }
 
-    await caso('Avaliações: nota 4,1, 71 avaliações, "Ler no Google" e "Avalie a clínica"', async () => {
-      const sec = page.locator('#avaliacoes');
-      assert.equal(await sec.locator('.av-nota').innerText(), '4,1');
-      assert.match(await sec.innerText(), /71 avaliações/);
-      assert.equal(await sec.locator('a', { hasText: 'Ler avaliações no Google' }).getAttribute('href'), C.clinica.googleMapsUrl);
-      assert.equal(await sec.locator('a', { hasText: 'Avalie a clínica' }).getAttribute('href'), `https://search.google.com/local/writereview?placeid=${C.clinica.googlePlaceId}`);
-      assert.equal(await sec.locator('.est-cheia').evaluate((e) => parseFloat(e.style.width)), 82);
+    await caso('Nota do Google escondida (mostrarAvaliacoes: false): nada de nota, estrelas ou seção de avaliações', async () => {
+      assert.equal(C.mostrarAvaliacoes, false);
+      const html = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8');
+      for (const proibido of ['avaliações no Google', 'avaliacoes no Google', 'id="avaliacoes"', 'writereview', 'class="estrelas"', 'Avalie a clínica']) {
+        assert.ok(!html.includes(proibido), `não pode aparecer: ${proibido}`);
+      }
+      const texto = await page.locator('body').innerText();
+      assert.ok(!/\b4,1\b/.test(texto), 'a nota 4,1 não aparece');
+      assert.ok(!/71 avaliações/.test(texto), 'o total de avaliações não aparece');
+      assert.match(await page.locator('.hero .confianca').innerText(), /Atendimento de segunda a sábado/);
     });
 
     await caso('Localização: endereço, horários, Google Maps (rota com place_id) e Waze', async () => {
@@ -222,7 +225,7 @@ async function main() {
 
     await caso('Menu e âncoras levam às seções certas', async () => {
       const hrefs = await page.locator('#nav a:not([data-wa])').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
-      assert.deepEqual(hrefs, ['#a-clinica', '#como-funciona', '#atendimento', '#avaliacoes', '#localizacao']);
+      assert.deepEqual(hrefs, ['#a-clinica', '#como-funciona', '#atendimento', '#galeria', '#localizacao']);
       const ancoras = await page.locator('a[href^="#"]').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
       for (const h of ancoras) assert.equal(await page.locator(h).count(), 1, `âncora ${h}`);
     });
@@ -299,7 +302,7 @@ async function main() {
     await mob.close();
 
     // ─── Versão final (fora da prévia) com Google Analytics ───────────────────
-    const final = { ...C, previa: false, site: { ...C.site, googleAnalyticsId: 'G-TESTE123' } };
+    const final = { ...C, previa: false, mostrarAvaliacoes: true, site: { ...C.site, googleAnalyticsId: 'G-TESTE123' } };
     const cf = path.join(TMP, 'final.json');
     fs.writeFileSync(cf, JSON.stringify(final));
     const DIST2 = path.join(TMP, 'dist-final');
@@ -314,6 +317,20 @@ async function main() {
         assert.equal(await f.locator('.previa').count(), 0);
         assert.match(fs.readFileSync(path.join(DIST2, 'robots.txt'), 'utf8'), /Sitemap: https:\/\/.+\/sitemap\.xml/);
         assert.doesNotMatch(fs.readFileSync(path.join(DIST2, '_headers'), 'utf8'), /noindex/);
+        await f.close();
+      });
+
+      await caso('Chave ligada (mostrarAvaliacoes: true): nota no topo, seção de avaliações, "Avalie a clínica" e item no menu', async () => {
+        const f = await browser.newPage();
+        await f.goto(`http://127.0.0.1:${PORT + 1}/`);
+        assert.match((await f.locator('.hero .confianca').textContent()).replace(/\s+/g, ' '), /4,1 · 71 avaliações no Google/);
+        const sec = f.locator('#avaliacoes');
+        assert.equal(await sec.locator('.av-nota').innerText(), '4,1');
+        assert.equal(await sec.locator('a', { hasText: 'Ler avaliações no Google' }).getAttribute('href'), C.clinica.googleMapsUrl);
+        assert.equal(await sec.locator('a', { hasText: 'Avalie a clínica' }).getAttribute('href'), `https://search.google.com/local/writereview?placeid=${C.clinica.googlePlaceId}`);
+        assert.equal(await sec.locator('.est-cheia').evaluate((e) => parseFloat(e.style.width)), 82);
+        const hrefs = await f.locator('#nav a:not([data-wa])').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+        assert.ok(hrefs.includes('#avaliacoes'));
         await f.close();
       });
 
