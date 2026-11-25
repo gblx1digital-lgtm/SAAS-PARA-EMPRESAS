@@ -7,6 +7,8 @@
 - **foto de perfil do WhatsApp Business, Instagram e Facebook**, já pensada para o corte redondo e sem nada cortado;
 - **logo em propostas, apresentações e posts.**
 
+**`gbl-capa-whatsapp.png`** é a capa do perfil do WhatsApp Business (1920×1080, formato 16:9). A logo e o texto ficam na parte de cima, porque a foto de perfil aparece por cima da parte de baixo da capa.
+
 `gbl-logo.svg` é a mesma logo em vetor, que pode ser ampliada sem perder qualidade. Use para gráfica e impressão.
 
 ## Cores

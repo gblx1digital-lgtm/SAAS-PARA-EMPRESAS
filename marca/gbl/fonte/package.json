@@ -4,7 +4,7 @@
   "private": true,
   "description": "Gera os arquivos da marca GBL (emblema com escudo e louros).",
   "scripts": {
-    "gerar": "node pack.js"
+    "gerar": "node pack.js && node capa.js"
   },
   "dependencies": {
     "paper": "^0.17.0",
