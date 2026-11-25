@@ -21,6 +21,12 @@ const PORT = 4500 + Math.floor(Math.random() * 400);
 const BASE = `http://127.0.0.1:${PORT}`;
 const C = JSON.parse(fs.readFileSync(path.join(ROOT, 'conteudo.json'), 'utf8'));
 const WA = C.clinica.whatsapp;
+// O teste não depende das chaves do conteudo.json: gera o site padrão (prévia, sem avaliações do Google)
+// e a versão final (com avaliações) a partir de configurações próprias. Inclui um depoimento de teste.
+const DEPO = { texto: 'Fui muito bem atendida, recomendo.', autor: 'Paciente Teste' };
+const PADRAO = { ...C, previa: true, mostrarAvaliacoes: false, depoimentos: [DEPO] };
+const HORARIO_CURTO = 'Seg. a sex. 8h–19h · Sáb. 8h–14h';
+const fundos = (p) => p.locator('main > section').evaluateAll((ss) => ss.map((s) => `${s.id}:${s.classList.contains('hero') ? 'hero' : s.classList.contains('secao-creme') ? 'creme' : s.classList.contains('secao-escura') ? 'escura' : s.classList.contains('final') ? 'sol' : 'branco'}`));
 
 function waText(href) {
   const u = new URL(href);
@@ -48,7 +54,9 @@ async function novaPagina(browser, { viewport = { width: 1366, height: 900 }, qu
 }
 
 async function main() {
-  execFileSync(process.execPath, [path.join(ROOT, 'build.js')], { env: { ...process.env, DIST_DIR: DIST }, stdio: 'pipe' });
+  const cp = path.join(TMP, 'padrao.json');
+  fs.writeFileSync(cp, JSON.stringify(PADRAO));
+  execFileSync(process.execPath, [path.join(ROOT, 'build.js')], { env: { ...process.env, DIST_DIR: DIST, CONTEUDO_FILE: cp }, stdio: 'pipe' });
   const srv = spawn(process.execPath, [path.join(ROOT, 'serve.js')], { env: { ...process.env, DIST_DIR: DIST, PORT: String(PORT) } });
   await new Promise((r) => srv.stdout.on('data', r));
 
@@ -69,7 +77,6 @@ async function main() {
     });
 
     await caso('Prévia fica fora do Google (noindex + robots.txt + cabeçalho) e mostra a faixa', async () => {
-      assert.equal(C.previa, true);
       assert.equal(await page.getAttribute('meta[name=robots]', 'content'), 'noindex, nofollow');
       assert.match(fs.readFileSync(path.join(DIST, 'robots.txt'), 'utf8'), /Disallow: \//);
       assert.match(fs.readFileSync(path.join(DIST, '_headers'), 'utf8'), /X-Robots-Tag: noindex/);
@@ -148,16 +155,37 @@ async function main() {
       });
     }
 
-    await caso('Nota do Google escondida (mostrarAvaliacoes: false): nada de nota, estrelas ou seção de avaliações', async () => {
-      assert.equal(C.mostrarAvaliacoes, false);
-      const html = fs.readFileSync(path.join(DIST, 'index.html'), 'utf8');
-      for (const proibido of ['avaliações no Google', 'avaliacoes no Google', 'id="avaliacoes"', 'writereview', 'class="estrelas"', 'Avalie a clínica']) {
-        assert.ok(!html.includes(proibido), `não pode aparecer: ${proibido}`);
+    await caso('Nota do Google escondida (mostrarAvaliacoes: false) em todas as páginas', async () => {
+      for (const arq of ['index.html', 'politica-de-privacidade/index.html', '404.html']) {
+        const html = fs.readFileSync(path.join(DIST, arq), 'utf8');
+        for (const proibido of ['avaliações no Google', 'avaliacoes no Google', 'id="avaliacoes"', '#avaliacoes', 'writereview', 'class="estrelas"', 'Avalie a clínica']) {
+          assert.ok(!html.includes(proibido), `${arq}: não pode aparecer "${proibido}"`);
+        }
       }
       const texto = await page.locator('body').innerText();
       assert.ok(!/\b4,1\b/.test(texto), 'a nota 4,1 não aparece');
       assert.ok(!/71 avaliações/.test(texto), 'o total de avaliações não aparece');
-      assert.match(await page.locator('.hero .confianca').innerText(), /Atendimento de segunda a sábado/);
+      const priv = fs.readFileSync(path.join(DIST, 'politica-de-privacidade/index.html'), 'utf8');
+      assert.ok(priv.includes('href="/#galeria">Fotos</a>'), 'o menu das outras páginas também troca para Fotos');
+    });
+
+    await caso('Topo sem repetição: a faixa mostra os horários do cadastro e o texto não repete dias nem endereço', async () => {
+      const faixa = (await page.locator('.hero .confianca').textContent()).replace(/\s+/g, ' ');
+      assert.ok(faixa.includes(HORARIO_CURTO), faixa);
+      const lead = await page.locator('.hero .lead').innerText();
+      assert.equal(lead, C.hero.texto);
+      assert.ok(!/segunda a sábado|9 de Março/.test(lead), 'o texto do topo não repete o que está na faixa');
+    });
+
+    await caso('Sem a faixa escura: localização separa "A clínica" da galeria e as cores alternam sem repetir', async () => {
+      assert.deepEqual(await fundos(page), ['inicio:hero', 'como-funciona:branco', 'atendimento:creme', 'a-clinica:branco', 'localizacao:creme', 'galeria:branco', 'duvidas:creme', 'agendar:sol']);
+    });
+
+    await caso('Depoimentos continuam aparecendo (em "A clínica") com as avaliações do Google escondidas', async () => {
+      const sec = page.locator('#a-clinica');
+      assert.match(await sec.innerText(), /O que dizem nossos pacientes/);
+      assert.ok((await sec.innerText()).includes(DEPO.texto));
+      assert.ok((await sec.innerText()).includes(DEPO.autor));
     });
 
     await caso('Localização: endereço, horários, Google Maps (rota com place_id) e Waze', async () => {
@@ -225,8 +253,8 @@ async function main() {
 
     await caso('Menu e âncoras levam às seções certas', async () => {
       const hrefs = await page.locator('#nav a:not([data-wa])').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
-      assert.deepEqual(hrefs, ['#a-clinica', '#como-funciona', '#atendimento', '#galeria', '#localizacao']);
-      const ancoras = await page.locator('a[href^="#"]').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+      assert.deepEqual(hrefs, ['#a-clinica', '#como-funciona', '#atendimento', '#localizacao', '#galeria']);
+      const ancoras = (await page.locator('a[href^="#"]').evaluateAll((as) => as.map((a) => a.getAttribute('href')))).filter((h) => h.length > 1);
       for (const h of ancoras) assert.equal(await page.locator(h).count(), 1, `âncora ${h}`);
     });
 
@@ -302,7 +330,7 @@ async function main() {
     await mob.close();
 
     // ─── Versão final (fora da prévia) com Google Analytics ───────────────────
-    const final = { ...C, previa: false, mostrarAvaliacoes: true, site: { ...C.site, googleAnalyticsId: 'G-TESTE123' } };
+    const final = { ...C, previa: false, mostrarAvaliacoes: true, depoimentos: [DEPO], site: { ...C.site, googleAnalyticsId: 'G-TESTE123' } };
     const cf = path.join(TMP, 'final.json');
     fs.writeFileSync(cf, JSON.stringify(final));
     const DIST2 = path.join(TMP, 'dist-final');
@@ -330,7 +358,13 @@ async function main() {
         assert.equal(await sec.locator('a', { hasText: 'Avalie a clínica' }).getAttribute('href'), `https://search.google.com/local/writereview?placeid=${C.clinica.googlePlaceId}`);
         assert.equal(await sec.locator('.est-cheia').evaluate((e) => parseFloat(e.style.width)), 82);
         const hrefs = await f.locator('#nav a:not([data-wa])').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
-        assert.ok(hrefs.includes('#avaliacoes'));
+        assert.deepEqual(hrefs, ['#a-clinica', '#como-funciona', '#atendimento', '#avaliacoes', '#localizacao']);
+        // (o "toque aqui" do formulário começa com href="#" e só ganha o link do WhatsApp depois do envio)
+        const ancoras = (await f.locator('a[href^="#"]').evaluateAll((as) => as.map((a) => a.getAttribute('href')))).filter((h) => h.length > 1);
+        for (const h of ancoras) assert.equal(await f.locator(h).count(), 1, `âncora ${h}`);
+        assert.deepEqual(await fundos(f), ['inicio:hero', 'como-funciona:branco', 'atendimento:creme', 'a-clinica:branco', 'avaliacoes:escura', 'galeria:branco', 'localizacao:creme', 'duvidas:branco', 'agendar:sol']);
+        assert.ok((await sec.innerText()).includes(DEPO.texto), 'com a chave ligada, o depoimento fica na seção de avaliações');
+        assert.ok(!(await f.locator('#a-clinica').innerText()).includes(DEPO.texto), 'e não se repete em A clínica');
         await f.close();
       });
 

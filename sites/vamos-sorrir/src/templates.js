@@ -99,7 +99,7 @@ function logo(assets, variante = 'cor') {
 function header(c, h, assets, { home = true } = {}) {
   const base = home ? '' : '/';
   const nav = [['a-clinica', 'A clínica'], ['como-funciona', 'Como funciona'], ['atendimento', 'Atendimento'],
-    mostrarAv(c) ? ['avaliacoes', 'Avaliações'] : ['galeria', 'Fotos'], ['localizacao', 'Localização']];
+    ...(mostrarAv(c) ? [['avaliacoes', 'Avaliações'], ['localizacao', 'Localização']] : [['localizacao', 'Localização'], ['galeria', 'Fotos']])];
   return `${c.previa ? `<div class="previa" role="note">Prévia do site da ${esc(h.cl.nome)}. Conteúdo em validação pela clínica.</div>` : ''}
 <a class="skip" href="#conteudo">Pular para o conteúdo</a>
 <div class="faixa-topo">
@@ -209,6 +209,13 @@ function jsonLd(c, h, assets) {
   return [clinica, site, faq].map((o) => `<script type="application/ld+json">${JSON.stringify(o).replace(/</g, '\\u003c')}</script>`).join('\n');
 }
 
+/** Depoimentos reais (com autorização), usados na seção de avaliações ou em "A clínica". */
+function depoimentosLista(c, cls = 'depo-grid') {
+  const lista = c.depoimentos || [];
+  if (!lista.length) return '';
+  return `<ul class="${cls}">${lista.map((d) => `<li><blockquote><p>“${esc(d.texto)}”</p><footer>${esc(d.autor)}</footer></blockquote></li>`).join('')}</ul>`;
+}
+
 /** "Vamos sorrir?" → a palavra "sorrir" ganha o traço de sorriso (se existir no título). */
 function tituloFinal(t) {
   const m = String(t).match(/^(.*?)(sorrir|sorriso)(.*)$/i);
@@ -234,7 +241,7 @@ function home(c, assets) {
       <ul class="confianca">
         ${mostrarAv(c)
           ? `<li><a href="${esc(h.mapsUrl)}" target="_blank" rel="noopener" data-evento="ver_avaliacoes">${estrelas(cl.nota)}<strong>${h.nota}</strong> · ${cl.avaliacoes} avaliações no Google</a></li>`
-          : `<li>${icon('relogio')}Atendimento de segunda a sábado</li>`}
+          : `<li>${icon('relogio')}${esc(h.horarioCurto)}</li>`}
         <li>${icon('local')}${esc(h.e.rua)}, ${esc(h.e.numero)} · ${esc(h.e.bairro)}</li>
       </ul>
     </div>
@@ -296,9 +303,10 @@ function home(c, assets) {
     </div>
   </div>
   ${equipe ? `<div class="wrap">${equipe}</div>` : ''}
+  ${!mostrarAv(c) && (c.depoimentos || []).length ? `<div class="wrap depoimentos-claro"><h3>O que dizem nossos pacientes</h3>${depoimentosLista(c, 'depo-grid depo-claro')}</div>` : ''}
 </section>`;
 
-  const depo = (c.depoimentos || []).length ? `<ul class="depo-grid">${c.depoimentos.map((d) => `<li><blockquote><p>“${esc(d.texto)}”</p><footer>${esc(d.autor)}</footer></blockquote></li>`).join('')}</ul>` : '';
+  const depo = depoimentosLista(c);
   const avaliacoes = `<section class="secao secao-escura" id="avaliacoes" aria-labelledby="av-tit">
   <div class="wrap av-grid">
     <div class="av-nota-box">
@@ -319,7 +327,7 @@ function home(c, assets) {
   ${depo ? `<div class="wrap">${depo}</div>` : ''}
 </section>`;
 
-  const galeria = `<section class="secao${mostrarAv(c) ? '' : ' secao-creme'}" id="galeria" aria-labelledby="gal-tit">
+  const galeria = `<section class="secao" id="galeria" aria-labelledby="gal-tit">
   <div class="wrap">
     <div class="cab"><p class="rotulo">Galeria</p><h2 id="gal-tit">${esc(c.galeria.titulo)}</h2><p>${esc(c.galeria.texto)}</p></div>
     <ul class="gal-grid">
@@ -344,7 +352,7 @@ function home(c, assets) {
 </section>`;
 
   const L = c.localizacao;
-  const localizacao = `<section class="secao${mostrarAv(c) ? ' secao-creme' : ''}" id="localizacao" aria-labelledby="loc-tit">
+  const localizacao = `<section class="secao secao-creme" id="localizacao" aria-labelledby="loc-tit">
   <div class="wrap loc-grid">
     <div class="loc-card">
       <p class="rotulo">Localização</p>
@@ -418,9 +426,7 @@ ${hero}
 ${passos}
 ${intencoes}
 ${sobre}
-${mostrarAv(c) ? avaliacoes : ''}
-${galeria}
-${localizacao}
+${mostrarAv(c) ? `${avaliacoes}\n${galeria}\n${localizacao}` : `${localizacao}\n${galeria}`}
 ${faq}
 ${final}
 </main>
@@ -474,7 +480,7 @@ ${header(c, h, assets, { home: false })}
     <p>Pelo WhatsApp ou telefone <a href="${esc(h.telLink)}">${esc(cl.telefone)}</a>${cl.email ? `, pelo e-mail <a href="mailto:${esc(cl.email)}">${esc(cl.email)}</a>` : ''} ou pessoalmente na clínica, no horário de funcionamento.</p>
     ${ga ? '<p><button class="btn btn-claro btn-sm" data-cookies="revogar">Revogar consentimento de cookies</button></p>' : ''}
 
-    <p><a class="btn btn-link" href="/">${icon('seta')} Voltar para o início</a></p>
+    <p><a class="btn btn-link voltar" href="/">${icon('seta')} Voltar para o início</a></p>
   </div>
 </main>
 ${footer(c, h, assets, { home: false })}

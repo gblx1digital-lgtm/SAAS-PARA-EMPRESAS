@@ -40,11 +40,11 @@ Quando a clínica aprovar, mude para `false`. O build **se recusa a gerar a vers
 
 Todo o texto está no **`conteudo.json`**. Os campos que começam com `_` explicam o que vai em cada lugar.
 
-- **`mostrarAvaliacoes`:** `false` esconde a nota do Google e a seção de avaliações. Mude para `true` se a clínica quiser mostrar, por exemplo quando a nota subir.
+- **`mostrarAvaliacoes`:** `false` esconde a nota do Google e a seção de avaliações. No lugar da nota, o topo mostra os horários; o menu troca "Avaliações" por "Fotos"; e a localização passa a vir antes da galeria, para as fotos de "A clínica" não ficarem coladas nas mesmas fotos da galeria. Mude para `true` se a clínica quiser mostrar a nota, por exemplo quando ela subir.
 - **`intencoes`:** os cartões de "Conte o que você precisa", com título, texto e a mensagem que vai para o WhatsApp.
 - **`passos`:** os 3 passos do "Agendar é simples".
 - **`clinica.horarios`:** os horários. `diasSemana` (0 = domingo … 6 = sábado) alimenta o "Aberto agora".
-- **Equipe, diferenciais e depoimentos:** ficam vazios e só aparecem quando preenchidos, com informações reais.
+- **Equipe, diferenciais e depoimentos:** ficam vazios e só aparecem quando preenchidos, com informações reais. Os depoimentos aparecem na seção de avaliações ou, com ela escondida, em "A clínica".
 - **`credito`:** a assinatura no rodapé. Deixe o texto vazio para não mostrar.
 - **Fotos:** ficam na pasta `fotos/`, com os nomes listados em `fotos/LEIA-ME.txt`.
 
@@ -68,13 +68,16 @@ npm start
 npm test
 ```
 
-O teste abre o site num navegador de verdade e confere 39 pontos, entre eles:
+O teste abre o site num navegador de verdade e confere 42 pontos, entre eles:
 - o "Aberto agora" em 7 dias e horários diferentes, simulando o relógio;
 - os links de WhatsApp, telefone, Maps, Waze e avaliação;
 - a galeria, o formulário, o menu e a barra do celular;
 - o layout de 320 a 1440 px;
 - o modo prévia e a versão final;
-- a nota do Google escondida e, com a chave ligada, de volta;
+- a nota do Google escondida em todas as páginas e, com a chave ligada, de volta;
+- a ordem e as cores das seções nos dois casos.
+
+O teste gera o site com configurações próprias, então funciona com qualquer valor de `previa` e `mostrarAvaliacoes` no `conteudo.json`.
 - os cookies.
 
 ## Publicar
