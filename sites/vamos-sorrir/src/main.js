@@ -1,10 +1,63 @@
-/* Vamos Sorrir — comportamento do site (menu, galeria, mapa, formulário, cookies). Sem bibliotecas. */
+/* Vamos Sorrir: comportamento do site (aberto agora, menu, galeria, mapa, formulário, cookies). Sem bibliotecas. */
 (function () {
   'use strict';
   var $ = function (s, el) { return (el || document).querySelector(s); };
   var $$ = function (s, el) { return Array.prototype.slice.call((el || document).querySelectorAll(s)); };
   var CFG = {};
   try { CFG = JSON.parse($('#config').textContent); } catch (e) { /* sem configuração */ }
+
+  // ─── Aberto agora (horário de Brasília) ──────────────────────────────────────
+  var NOMES = ['domingo', 'segunda', 'terça', 'quarta', 'quinta', 'sexta', 'sábado'];
+  var DIAS = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+  function agora() {
+    try {
+      var f = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Sao_Paulo', weekday: 'short', hour: '2-digit', minute: '2-digit', hour12: false });
+      var p = {};
+      f.formatToParts(new Date()).forEach(function (x) { p[x.type] = x.value; });
+      var h = Number(p.hour) % 24;
+      return { dia: DIAS[p.weekday], min: h * 60 + Number(p.minute) };
+    } catch (e) { return null; }
+  }
+  function minutos(s) { var a = String(s).split(':'); return Number(a[0]) * 60 + Number(a[1]); }
+  function fmt(s) { var a = String(s).split(':'); return Number(a[0]) + 'h' + (a[1] && a[1] !== '00' ? a[1] : ''); }
+  function horarioDo(dia) {
+    var hs = CFG.horarios || [];
+    for (var i = 0; i < hs.length; i++) if (hs[i].a && hs[i].d.indexOf(dia) >= 0) return hs[i];
+    return null;
+  }
+  function calcular() {
+    var n = agora();
+    if (!n) return null;
+    var hj = horarioDo(n.dia);
+    if (hj && n.min >= minutos(hj.a) && n.min < minutos(hj.f)) return { n: n, aberto: true, texto: 'Aberto agora', extra: 'fecha às ' + fmt(hj.f) };
+    if (hj && n.min < minutos(hj.a)) return { n: n, aberto: false, texto: 'Fechado agora', extra: 'abre hoje às ' + fmt(hj.a) };
+    for (var i = 1; i <= 7; i++) {
+      var d = (n.dia + i) % 7, x = horarioDo(d);
+      if (x) return { n: n, aberto: false, texto: 'Fechado agora', extra: 'abre ' + (i === 1 ? 'amanhã' : NOMES[d]) + ' às ' + fmt(x.a) };
+    }
+    return { n: n, aberto: false, texto: 'Fechado', extra: '' };
+  }
+  function atualizarStatus() {
+    var s = calcular();
+    if (!s) return;
+    $$('[data-status]').forEach(function (el) {
+      el.classList.toggle('aberto', s.aberto);
+      el.classList.toggle('fechado', !s.aberto);
+      var t = $('.status-txt', el);
+      if (!t) return;
+      t.textContent = '';
+      var strong = document.createElement('strong');
+      strong.textContent = s.texto;
+      t.appendChild(strong);
+      if (s.extra) t.appendChild(document.createTextNode(' · ' + s.extra));
+    });
+    $$('.horarios [data-dias]').forEach(function (row) {
+      var dias = row.getAttribute('data-dias').split(',').map(Number);
+      row.classList.toggle('hoje', dias.indexOf(s.n.dia) >= 0);
+    });
+  }
+  atualizarStatus();
+  setInterval(atualizarStatus, 60000);
 
   // ─── Menu do celular ─────────────────────────────────────────────────────────
   var btn = $('#menu-btn'), nav = $('#nav');
@@ -19,17 +72,13 @@
     $$('a', nav).forEach(function (a) { a.addEventListener('click', fecharMenu); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fecharMenu(); });
   }
-
-  // Borda no topo ao rolar
   var topo = $('#topo');
   function aoRolar() { if (topo) topo.classList.toggle('rolou', window.scrollY > 8); }
   window.addEventListener('scroll', aoRolar, { passive: true });
   aoRolar();
 
   // ─── Medição (Google Analytics só com consentimento) ─────────────────────────
-  function evento(nome, params) {
-    if (typeof window.gtag === 'function') window.gtag('event', nome, params || {});
-  }
+  function evento(nome, params) { if (typeof window.gtag === 'function') window.gtag('event', nome, params || {}); }
   function carregarGA() {
     if (!CFG.ga || window.gtag) return;
     var s = document.createElement('script');
@@ -51,28 +100,24 @@
   }
   document.addEventListener('click', function (e) {
     var b = e.target.closest('[data-cookies]');
-    if (!b) return;
-    var v = b.getAttribute('data-cookies');
-    if (v === 'revogar') { salvarConsentimento(null); window.location.reload(); return; }
-    salvarConsentimento(v);
-    if (aviso) aviso.hidden = true;
-    if (v === 'sim') carregarGA();
-  });
-
-  // Cliques em WhatsApp e mapas (para saber de onde vêm os contatos)
-  document.addEventListener('click', function (e) {
+    if (b) {
+      var v = b.getAttribute('data-cookies');
+      if (v === 'revogar') { salvarConsentimento(null); window.location.reload(); return; }
+      salvarConsentimento(v);
+      if (aviso) aviso.hidden = true;
+      if (v === 'sim') carregarGA();
+      return;
+    }
     var a = e.target.closest('[data-wa]');
     if (a) evento('contato_whatsapp', { origem: a.getAttribute('data-wa') });
     var m = e.target.closest('[data-evento]');
     if (m) evento(m.getAttribute('data-evento'));
   });
 
-  // Botão flutuante some quando a chamada final está na tela (não cobre o formulário)
+  // Botão flutuante (computador) some quando a chamada final está na tela
   var flutuante = $('.wa-flutuante'), final = $('#agendar');
   if (flutuante && final && 'IntersectionObserver' in window) {
-    new IntersectionObserver(function (entries) {
-      flutuante.classList.toggle('escondido', entries[0].isIntersecting);
-    }, { threshold: 0.15 }).observe(final);
+    new IntersectionObserver(function (entries) { flutuante.classList.toggle('escondido', entries[0].isIntersecting); }, { threshold: 0.15 }).observe(final);
   }
 
   // ─── Mapa: carrega quando chega perto da tela (ou ao clicar) ─────────────────
@@ -91,9 +136,7 @@
     var mb = $('#mapa-carregar');
     if (mb) mb.addEventListener('click', carregarMapa);
     if ('IntersectionObserver' in window) {
-      var io = new IntersectionObserver(function (entries) {
-        if (entries[0].isIntersecting) { carregarMapa(); io.disconnect(); }
-      }, { rootMargin: '300px' });
+      var io = new IntersectionObserver(function (entries) { if (entries[0].isIntersecting) { carregarMapa(); io.disconnect(); } }, { rootMargin: '300px' });
       io.observe(mapa);
     }
   }

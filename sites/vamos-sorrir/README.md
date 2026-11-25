@@ -1,36 +1,51 @@
 # Site — Vamos Sorrir (clínica odontológica, Joinville/SC)
 
-Site de uma página (mais a política de privacidade), feito para transformar visitas em pedidos de agendamento pelo WhatsApp.
+Site de uma página (mais a política de privacidade) feito para transformar visitas em pedidos de avaliação pelo WhatsApp, dentro das regras de publicidade odontológica.
 
 ## O que tem
 
-- **Seções:** topo com menu, apresentação, a clínica, tratamentos, por que conhecer, avaliações, galeria, localização com mapa, perguntas frequentes e chamada final com formulário.
-- **WhatsApp com mensagem pronta por seção.** Cada tratamento pergunta sobre ele mesmo.
-- **Formulário de agendamento:** nome, telefone, motivo, dia e período. Ele monta a mensagem e abre o WhatsApp, deixando claro que **a equipe confirma o horário**. Nada fica guardado no site.
-- **Botão flutuante de WhatsApp**, que some quando o formulário aparece para não cobri-lo.
-- **SEO local:**
-  - título, descrição, um único H1, Open Graph e imagem de compartilhamento gerada sozinha;
-  - dados estruturados do Google (`Dentist`, `FAQPage`), sitemap e robots.txt.
-- **Desempenho:** fotos convertidas para WebP em 3 tamanhos, fonte no próprio site, mapa carregado só quando a pessoa chega perto dele e nenhuma biblioteca externa.
-- **Acessibilidade:** navegação por teclado, menu acessível, textos alternativos, botões com área de toque grande e respeito a "reduzir movimento".
+- **Topo que converte:**
+  - título com a busca que o paciente faz ("Cuide do seu sorriso no Centro de Joinville");
+  - **aviso "Aberto agora · fecha às 19h"** calculado no horário de Brasília, que também mostra "Fechado agora · abre amanhã às 8h", "abre segunda" etc.;
+  - botões de WhatsApp e de ligar;
+  - nota do Google, fotos da clínica e o selo da responsável técnica.
+- **Agendar é simples:** 3 passos que tiram a insegurança de entrar em contato.
+- **Conte o que você precisa:** cartões pensados no problema do paciente ("Estou com dor", "Perdi um dente", "Quero clarear"...). Cada um abre o WhatsApp com a mensagem daquela situação, sem afirmar tratamentos que a clínica não confirmou.
+- **A clínica:** fotos e fatos verificados (endereço, horários, WhatsApp, responsável técnica com CRO).
+- **Avaliações:** nota e total do Google, botão para ler e botão **"Já é paciente? Avalie a clínica"**, que abre direto a tela de avaliação do Google.
+- **Galeria** com ampliação.
+- **Localização:**
+  - horário com o **dia de hoje destacado** e aviso sobre feriados;
+  - rota pelo **Google Maps** e pelo **Waze**;
+  - mapa que só carrega quando a pessoa chega perto dele.
+- **Perguntas frequentes**, incluindo "quanto custa", respondida sem divulgar preço, como o CFO exige.
+- **Chamada final "Vamos sorrir?"** com formulário que monta a mensagem de agendamento e abre o WhatsApp, deixando claro que **a equipe confirma o horário**. Nada fica guardado no site.
+- **Celular:** barra fixa embaixo com **WhatsApp** e **Ligar**. No computador, botão flutuante de WhatsApp.
+- **Logo em vetor** gerado no build, no estilo da fachada ("Vamos" em grafite e "Sorrir" em vermelho com o sorriso). Para usar o arquivo oficial da clínica, troque o `makeLogo` no `build.js`.
+- **SEO local:** título, descrição, um único H1, Open Graph, dados estruturados do Google (`Dentist`, `FAQPage`), sitemap e robots.txt.
+- **Desempenho:** fotos em WebP com vários tamanhos, fontes no próprio site e nenhuma biblioteca externa.
+- **Acessibilidade:** teclado, menu acessível, textos alternativos e botões com pelo menos 44 px de altura.
 - **LGPD:** política de privacidade. O Google Analytics é opcional e só carrega depois que o visitante aceita os cookies.
-- **Segurança:** cabeçalhos de segurança, incluindo CSP (arquivo `_headers`).
+- **Segurança:** cabeçalhos de segurança (arquivo `_headers`).
 
 ## Modo prévia (padrão)
 
 Com `"previa": true` no `conteudo.json`, o site:
-- mostra uma faixa "Prévia do site — conteúdo em validação pela clínica";
+- mostra a faixa "Prévia do site";
 - **não aparece no Google** (`noindex` e robots.txt bloqueando).
 
-Use assim para apresentar à clínica. Quando ela aprovar, mude para `false`. O build **se recusa a gerar a versão final sem o responsável técnico e o CRO**, que são obrigatórios na divulgação odontológica.
+Quando a clínica aprovar, mude para `false`. O build **se recusa a gerar a versão final sem o responsável técnico e o CRO**.
 
 ## Como editar
 
-Todo o texto está no **`conteudo.json`**: dados da clínica, tratamentos, perguntas frequentes, mensagens de WhatsApp, equipe, depoimentos e fotos. Os campos que começam com `_` explicam o que vai em cada lugar.
+Todo o texto está no **`conteudo.json`**. Os campos que começam com `_` explicam o que vai em cada lugar.
 
-- **Tratamentos:** cada um tem `"confirmado": false`, e o botão pergunta *"vocês realizam...?"*. Quando a clínica confirmar, mude para `true` e o botão vira "Agendar". Apague os que ela não faz.
+- **`intencoes`:** os cartões de "Conte o que você precisa", com título, texto e a mensagem que vai para o WhatsApp.
+- **`passos`:** os 3 passos do "Agendar é simples".
+- **`clinica.horarios`:** os horários. `diasSemana` (0 = domingo … 6 = sábado) alimenta o "Aberto agora".
 - **Equipe, diferenciais e depoimentos:** ficam vazios e só aparecem quando preenchidos, com informações reais.
-- **Fotos:** coloque na pasta `fotos/` com os nomes listados em `fotos/LEIA-ME.txt`. Foto que faltar aparece como espaço reservado.
+- **`credito`:** a assinatura no rodapé. Deixe o texto vazio para não mostrar.
+- **Fotos:** ficam na pasta `fotos/`, com os nomes listados em `fotos/LEIA-ME.txt`.
 
 ## Comandos
 
@@ -46,44 +61,33 @@ npm run build
 npm start
 ```
 
-`npm run build` gera a pasta `dist/` e avisa o que está faltando. `npm start` gera e abre em <http://localhost:4000>.
+`npm run build` gera a pasta `dist/`. `npm start` gera e abre em <http://localhost:4000>.
 
 ```bash
 npm test
 ```
 
-O teste abre o site num navegador de verdade e confere 27 pontos: links, mensagens do WhatsApp, formulário, menu do celular, galeria, mapa, SEO, cookies, modo prévia e final, e layout de 320 a 1440 px.
+O teste abre o site num navegador de verdade e confere 38 pontos, entre eles:
+- o "Aberto agora" em 7 dias e horários diferentes, simulando o relógio;
+- os links de WhatsApp, telefone, Maps, Waze e avaliação;
+- a galeria, o formulário, o menu e a barra do celular;
+- o layout de 320 a 1440 px;
+- o modo prévia e a versão final;
+- os cookies.
 
 ## Publicar
 
-O site é estático (só arquivos), então funciona em qualquer hospedagem.
-
-- **Netlify (recomendado, grátis para começar):**
-  1. Conecte o repositório.
-  2. Em *Base directory*, coloque `sites/vamos-sorrir`.
-  3. O `netlify.toml` já define o build e a pasta.
-- **Vercel:** *Root Directory* `sites/vamos-sorrir`, *Build Command* `npm run build`, *Output Directory* `dist`. Os cabeçalhos do `_headers` não valem lá.
+- **Netlify, o mais simples:** gere o site com `npm run build`, compacte o **conteúdo** da pasta `dist` num .zip e arraste o .zip no painel da Netlify.
+- **Netlify ligada ao GitHub:** em *Base directory*, coloque `sites/vamos-sorrir`. O `netlify.toml` já define o build.
 - **Domínio próprio:** registre no registro.br (ex.: `vamossorrirjoinville.com.br`), aponte para a hospedagem e coloque o endereço em `site.url`.
 
 ## Checklist antes de sair da prévia
 
-1. Fotos reais da clínica em `fotos/`, com autorização.
-2. `responsavelTecnico` e `croResponsavel` preenchidos (e `inscricaoClinicaCro`, se a clínica tiver).
-3. Tratamentos revisados com a clínica (`confirmado: true` ou apagados).
-4. `googleMapsUrl` com o link exato do perfil da clínica (botão **Compartilhar** no Google Maps).
-5. `site.url` com o domínio definitivo.
-6. Nota e número de avaliações atualizados.
-7. Opcional: `googleAnalyticsId` (GA4) e `googleSearchConsole`.
-8. `"previa": false`, `npm test`, `npm run build` e publicar.
-9. **Depois de publicar:**
-   - no Search Console, envie o `sitemap.xml`;
-   - no **Perfil da Empresa no Google**, coloque o link do site. Esse é o passo que mais traz visitas.
-
-## Regras de publicidade odontológica (CFO)
-
-O site já segue as principais regras:
-- não mostra preços, promoções ou "antes e depois";
-- não promete resultado;
-- tem espaço obrigatório para o nome e o CRO do responsável técnico.
-
-Antes de publicar, a clínica deve conferir o texto final com o responsável técnico.
+1. A clínica autorizou as fotos (hoje são as do perfil dela no Google).
+2. Responsável técnica, CRO e EPAO confirmados (foram lidos na placa da fachada).
+3. Os cartões de atendimento combinam com o que a clínica faz.
+4. `site.url` com o domínio definitivo.
+5. Nota e número de avaliações atualizados.
+6. Opcional: `googleAnalyticsId` (GA4) e `googleSearchConsole`.
+7. `"previa": false`, `npm test`, `npm run build` e publicar.
+8. **Depois de publicar:** envie o `sitemap.xml` no Search Console e coloque o link do site no **Perfil da Empresa no Google**.

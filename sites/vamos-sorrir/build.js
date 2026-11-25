@@ -10,6 +10,7 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const sharp = require('sharp');
+const opentype = require('opentype.js');
 const tpl = require('./src/templates');
 
 const ROOT = __dirname;
@@ -44,8 +45,8 @@ function findPhoto(file) {
 }
 
 async function processImages(c) {
-  const wanted = new Set([c.hero.foto, ...c.sobre.fotos, ...c.galeria.fotos.map(f => f.arquivo),
-    ...c.tratamentos.lista.map(t => t.foto), ...(c.sobre.equipe || []).map(p => p.foto)].filter(Boolean));
+  const wanted = new Set([c.hero.foto, c.hero.fotoSecundaria, ...c.sobre.fotos, ...c.galeria.fotos.map(f => f.arquivo),
+    ...(c.sobre.equipe || []).map(p => p.foto)].filter(Boolean));
   const images = {};
   const faltando = [];
   fs.mkdirSync(path.join(DIST, 'img'), { recursive: true });
@@ -78,9 +79,66 @@ async function processImages(c) {
   return { images, faltando };
 }
 
+// ─── Logo em vetor: "Vamos" + "Sorrir" (vermelho) com o traço de sorriso e "ODONTOLOGIA", como na fachada.
+// Texto convertido em curvas (não depende de fonte). Para usar o logo oficial, troque por um SVG da clínica.
+function loadFont(file) {
+  const buf = fs.readFileSync(path.join(ROOT, 'node_modules', '@fontsource', ...file.split('/')));
+  return opentype.parse(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength));
+}
+// Converte os comandos da letra em texto de <path> (o toPathData do opentype.js 2 às vezes escreve "NaN")
+function cmdsToD(cmds) {
+  const f = (n) => String(Math.round(n * 100) / 100);
+  let d = '';
+  for (const c of cmds) {
+    if (c.type === 'M' || c.type === 'L') d += c.type + f(c.x) + ' ' + f(c.y);
+    else if (c.type === 'Q') d += 'Q' + f(c.x1) + ' ' + f(c.y1) + ' ' + f(c.x) + ' ' + f(c.y);
+    else if (c.type === 'C') d += 'C' + f(c.x1) + ' ' + f(c.y1) + ' ' + f(c.x2) + ' ' + f(c.y2) + ' ' + f(c.x) + ' ' + f(c.y);
+    else if (c.type === 'Z') d += 'Z';
+  }
+  return d;
+}
+function setText(font, str, x, y, size, tracking = 0) {
+  const glyphs = [...str].map((ch) => font.charToGlyph(ch));
+  const scale = size / font.unitsPerEm;
+  let cx = x; const parts = []; const bb = { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity };
+  glyphs.forEach((g, i) => {
+    const p = g.getPath(cx, y, size);
+    parts.push(cmdsToD(p.commands));
+    // caixa calculada lendo os pontos (getBoundingBox/extend do opentype.js 2 alteram o cache da letra)
+    for (const cmd of p.commands) for (const [kx, ky] of [['x', 'y'], ['x1', 'y1'], ['x2', 'y2']]) {
+      if (typeof cmd[kx] === 'number') { bb.x1 = Math.min(bb.x1, cmd[kx]); bb.x2 = Math.max(bb.x2, cmd[kx]); bb.y1 = Math.min(bb.y1, cmd[ky]); bb.y2 = Math.max(bb.y2, cmd[ky]); }
+    }
+    let adv = g.advanceWidth * scale;
+    if (i < glyphs.length - 1) adv += font.getKerningValue(g, glyphs[i + 1]) * scale + tracking * size;
+    cx += adv;
+  });
+  const d = parts.join('');
+  if (/NaN/.test(d)) throw new Error(`Logo: desenho inválido em "${str}"`);
+  return { d, bb };
+}
+function makeLogo(nome) {
+  const heavy = loadFont('nunito/files/nunito-latin-900-normal.woff');
+  const bold = loadFont('nunito/files/nunito-latin-800-normal.woff');
+  const words = String(nome).trim().split(/\s+/);
+  const last = words.pop(); const first = words.join(' ');
+  const S = 40, base = 40;
+  const a = setText(heavy, first, 0, base, S, -0.01);
+  const gap = S * 0.24;
+  const b = setText(heavy, last, a.bb.x2 + gap, base, S, -0.01);
+  // traço de sorriso embaixo da primeira palavra
+  const sx0 = a.bb.x1 + 2, sx1 = a.bb.x2 - 2, sy = base + 7;
+  const arc = `M${sx0.toFixed(1)} ${sy}Q${((sx0 + sx1) / 2).toFixed(1)} ${sy + 13} ${sx1.toFixed(1)} ${sy}`;
+  const sub = setText(bold, 'ODONTOLOGIA', b.bb.x1 + 1, base + 15, 8.6, 0.28);
+  const x1 = Math.min(a.bb.x1, sub.bb.x1) - 1, y1 = Math.min(a.bb.y1, b.bb.y1) - 1;
+  const x2 = Math.max(b.bb.x2, sub.bb.x2) + 1, y2 = Math.max(sy + 9, sub.bb.y2) + 1;
+  const vb = `${x1.toFixed(1)} ${y1.toFixed(1)} ${(x2 - x1).toFixed(1)} ${(y2 - y1).toFixed(1)}`;
+  const svg = (ink, red, subc) => `<svg class="logo-svg" viewBox="${vb}" role="img" aria-hidden="true" focusable="false"><path fill="${ink}" d="${a.d}"/><path fill="${red}" d="${b.d}"/><path d="${arc}" fill="none" stroke="${red}" stroke-width="3.2" stroke-linecap="round"/><path fill="${subc}" d="${sub.d}"/></svg>`;
+  return { cor: svg('#2B2620', '#D9382B', '#6E675B'), claro: svg('#FFFFFF', '#FF7A6B', 'rgba(255,255,255,.7)') };
+}
+
 async function brandAssets(c, images) {
-  // Favicon (SVG) e ícone para celular (PNG)
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="10" fill="#F5C518"/><path d="M11 17.5c0-1.2.9-2 2-2s2 .8 2 2M25 17.5c0-1.2.9-2 2-2s2 .8 2 2" fill="none" stroke="#2A2317" stroke-width="2.2" stroke-linecap="round"/><path d="M11.5 23c2.2 3.4 5.1 5 8.5 5s6.3-1.6 8.5-5" fill="none" stroke="#2A2317" stroke-width="2.6" stroke-linecap="round"/></svg>`;
+  // Favicon (SVG) e ícone para celular (PNG): sorriso vermelho no quadrado amarelo da fachada
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="10" fill="#F7C531"/><circle cx="14" cy="16" r="2.3" fill="#2B2620"/><circle cx="26" cy="16" r="2.3" fill="#2B2620"/><path d="M11 22.5Q20 32 29 22.5" fill="none" stroke="#D9382B" stroke-width="3.2" stroke-linecap="round"/></svg>`;
   fs.writeFileSync(path.join(DIST, 'favicon.svg'), svg);
   await sharp(Buffer.from(svg)).resize(180, 180).png().toFile(path.join(DIST, 'apple-touch-icon.png'));
 
@@ -108,6 +166,9 @@ function copyStatic() {
   fs.mkdirSync(fonts, { recursive: true });
   const fsrc = path.join(ROOT, 'node_modules', '@fontsource', 'plus-jakarta-sans', 'files');
   for (const w of [400, 500, 600, 700]) fs.copyFileSync(path.join(fsrc, `plus-jakarta-sans-latin-${w}-normal.woff2`), path.join(fonts, `jakarta-${w}.woff2`));
+  const fr = path.join(ROOT, 'node_modules', '@fontsource', 'fraunces', 'files');
+  fs.copyFileSync(path.join(fr, 'fraunces-latin-600-normal.woff2'), path.join(fonts, 'fraunces-600.woff2'));
+  fs.copyFileSync(path.join(fr, 'fraunces-latin-600-italic.woff2'), path.join(fonts, 'fraunces-600-italic.woff2'));
   const out = {};
   for (const [name, ext] of [['styles', 'css'], ['main', 'js']]) {
     const buf = fs.readFileSync(path.join(ROOT, 'src', `${name}.${ext}`));
@@ -168,7 +229,7 @@ async function main() {
   const { images, faltando } = await processImages(c);
   const og = await brandAssets(c, images);
   const files = copyStatic();
-  const assets = { images, og, css: files.css, js: files.js };
+  const assets = { images, og, css: files.css, js: files.js, logo: makeLogo(c.clinica.nome) };
 
   fs.writeFileSync(path.join(DIST, 'index.html'), tpl.home(c, assets));
   fs.mkdirSync(path.join(DIST, 'politica-de-privacidade'), { recursive: true });
