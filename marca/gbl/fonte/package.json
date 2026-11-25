@@ -2,14 +2,15 @@
   "name": "marca-gbl",
   "version": "1.0.0",
   "private": true,
-  "description": "Gera os arquivos da marca GBL (logo, ícone, perfis, favicon e folha de apresentação).",
+  "description": "Gera os arquivos da marca GBL (emblema com escudo e louros).",
   "scripts": {
     "gerar": "node pack.js"
   },
   "dependencies": {
-    "opentype.js": "^2.0.0",
     "paper": "^0.17.0",
     "sharp": "^0.35.5",
+    "opentype.js": "^2.0.0",
+    "@fontsource/sora": "^5.3.0",
     "@fontsource/manrope": "^5.3.0"
   }
 }

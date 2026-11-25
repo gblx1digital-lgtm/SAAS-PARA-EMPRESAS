@@ -1,6 +1,6 @@
 # Marca GBL — Sites & Marketing
 
-Logo "Linha de Conexão": as letras GBL foram desenhadas sob medida, sobre uma única construção geométrica. A barra do **G** atravessa e vira a cintura do **B**, como uma linha que conecta as letras, assim como um site conecta o negócio aos clientes.
+Emblema: escudo com o monograma **GBL**, ramos de louro e estrela. As letras foram desenhadas sob medida para seguir as bordas do escudo com a mesma espessura: a curva do G e o pé do L acompanham a ponta do escudo. Passa solidez e confiança.
 
 ![Apresentação da marca](apresentacao.png)
 
@@ -8,13 +8,14 @@ Logo "Linha de Conexão": as letras GBL foram desenhadas sob medida, sobre uma �
 
 | Onde | Arquivo |
 |---|---|
-| **Foto de perfil do WhatsApp Business** | `gbl-perfil-whatsapp.png` (640×640) |
-| **Foto de perfil do Instagram / Facebook** | `gbl-perfil-instagram.png` (1080×1080) |
-| Propostas, PDFs, sites, assinatura de e-mail (fundo claro) | `gbl-logo.png` ou `gbl-logo.svg` |
-| Fundos escuros ou fotos | `gbl-logo-branco.png` / `.svg` |
-| Espaços quadrados (posts, capas, cartão de visita) | `gbl-logo-vertical.png` / `.svg`, ou a versão `-branco` |
-| Só as letras, sem o slogan | `gbl-letras.png` / `.svg`, ou a versão `-branco` |
-| Ícone (aplicativo, apresentação, marca d'água) | `gbl-icone.svg` / `gbl-icone-1024.png` |
+| **Foto de perfil do WhatsApp Business** | `gbl-perfil-whatsapp.png` (só o escudo; é a que melhor se lê pequena) |
+| Foto de perfil do WhatsApp, versão com louros | `gbl-perfil-whatsapp-louros.png` |
+| **Foto de perfil do Instagram / Facebook** | `gbl-perfil-instagram.png` (ou `-louros`) |
+| Propostas, apresentações, capas, cartão de visita | `gbl-logo-vertical.png` (emblema + GBL + slogan) |
+| Topo de site, assinatura de e-mail, cabeçalho de PDF | `gbl-logo-horizontal.png` (escudo + GBL + slogan) |
+| Só o símbolo grande (marca d'água, carimbo, adesivo) | `gbl-emblema.png` |
+| Só o escudo (espaços pequenos) | `gbl-escudo.png` |
+| Fundos escuros ou fotos | qualquer versão `-branco` |
 | Ícone da aba do navegador do seu site | `favicon.svg` / `favicon-512.png` |
 
 - **PNG** serve para o dia a dia (WhatsApp, Canva, Word, redes sociais). As versões de logo têm fundo transparente.
@@ -24,23 +25,27 @@ Logo "Linha de Conexão": as letras GBL foram desenhadas sob medida, sobre uma �
 
 | Nome | Hex | Uso |
 |---|---|---|
-| Azul-noite | `#0A1630` | Letras GBL e fundos escuros (cor principal) |
-| Azul-profundo | `#1B3478` | Gradiente do ícone |
+| Azul-noite | `#0A1630` | Emblema, textos e fundos escuros (cor principal) |
+| Azul-profundo | `#1B3478` | Gradiente das fotos de perfil |
 | Azul-cobalto | `#3D6BFF` | Slogan e destaques (botões, links) |
 | Névoa | `#F3F5FA` | Fundos claros |
-| Linha | `#C9D2E6` | Divisória do logo horizontal |
 
 ## Tipografia
 
-- **GBL:** letras desenhadas sob medida. Não existe fonte com essas letras: use sempre os arquivos.
-- **Slogan e textos da marca:** Manrope Bold (grátis no Google Fonts).
+- **Monograma GBL do escudo:** desenhado sob medida. Não existe fonte com essas letras: use sempre os arquivos.
+- **"GBL" e slogan:** Sora ExtraBold e Sora SemiBold (grátis no Google Fonts).
 
 ## Cuidados
 
-- Não estique, não incline e não mude as cores do logo.
-- Deixe um respiro em volta do logo de pelo menos a altura da barra do G.
+- Não estique, não incline e não mude as cores.
+- Deixe um respiro em volta do logo de pelo menos a altura da estrela.
 - Em fundo escuro ou foto, use as versões `-branco`.
-- O logo horizontal não deve ficar com menos de 120 px de largura. Abaixo disso, use só as letras ou o ícone.
+- **Os louros perdem detalhe em tamanho pequeno.** Abaixo de 150 px de altura, use o escudo sozinho (`gbl-escudo` ou `gbl-logo-horizontal`).
+
+## Outras versões
+
+- `anterior-linha-de-conexao/`: a primeira logo criada ("Linha de Conexão"), com o pacote completo.
+- `opcoes-geometricas/`: as opções em moldura (hexágono, escudo, escudo com louros) e o código que as gera.
 
 ## Editar ou gerar de novo
 
